@@ -1,0 +1,19 @@
+# Python Dependencies for AI Foundry Samples
+# This requirements.txt covers all Python samples in this project
+
+# OpenAI SDK for Azure OpenAI integration
+openai>=1.0.0
+
+# Python dotenv for environment variable management
+python-dotenv>=1.0.0
+
+# LangChain for LangChain samples
+langchain>=0.1.0
+langchain-openai>=0.1.0
+
+# Additional utilities
+requests>=2.31.0
+
+# Jupyter for notebook samples
+jupyter>=1.0.0
+ipykernel>=6.0.0

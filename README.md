@@ -66,7 +66,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | Sample | Description | Status | Notes |
 |--------|-------------|--------|-------|
 | 1. Direct API | HTTP file for REST client extension | ✅ Complete | Uses .http file format |
-| 2. OpenAI Python (Notebook) | Jupyter notebook with OpenAI SDK | ⏳ Pending | Interactive exploration |
+| 2. OpenAI Python (Notebook) | Jupyter notebook with OpenAI SDK | ✅ Complete | Interactive exploration |
 | 3. OpenAI Python (CLI) | Command line app with OpenAI SDK | ⏳ Pending | Loop until user quits |
 | 4. OpenAI .NET (CLI) | Command line app with OpenAI .NET SDK | ⏳ Pending | Loop until user quits |
 | 5. LangChain (Notebook) | Jupyter notebook with LangChain | ⏳ Pending | Python notebook format |
