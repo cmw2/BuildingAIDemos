@@ -67,7 +67,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 |--------|-------------|--------|-------|
 | 1. Direct API | HTTP file for REST client extension | ✅ Complete | Uses .http file format |
 | 2. OpenAI Python (Notebook) | Jupyter notebook with OpenAI SDK | ✅ Complete | Interactive exploration |
-| 3. OpenAI Python (CLI) | Command line app with OpenAI SDK | ⏳ Pending | Loop until user quits |
+| 3. OpenAI Python (CLI) | Command line app with OpenAI SDK | ✅ Complete | Loop until user quits |
 | 4. OpenAI .NET (CLI) | Command line app with OpenAI .NET SDK | ⏳ Pending | Loop until user quits |
 | 5. LangChain (Notebook) | Jupyter notebook with LangChain | ⏳ Pending | Python notebook format |
 | 6. Semantic Kernel .NET | Command line app with Semantic Kernel | ⏳ Pending | Loop until user quits |
@@ -101,13 +101,20 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Response streaming example
 
 ### 3. OpenAI SDK Python (CLI)
-- **File**: `samples/03-openai-python-cli/openai-cli.py`
+- **Files**: 
+  - `samples/03-openai-python-cli/openai-cli.py` - Standard responses
+  - `samples/03-openai-python-cli/openai-streaming-cli.py` - Streaming responses
 - **Purpose**: Command line application using OpenAI Python SDK
-- **Usage**: `python openai-cli.py`
+- **Usage**: 
+  - Standard: `python samples/03-openai-python-cli/openai-cli.py`
+  - Streaming: `python samples/03-openai-python-cli/openai-streaming-cli.py`
 - **Features**:
-  - Continuous input loop
-  - Clean output formatting
-  - Graceful exit on quit
+  - Continuous input loop until user types 'quit'
+  - Environment-based configuration from .env file
+  - Error handling with graceful degradation
+  - Clean output formatting with emojis
+  - Hardcoded temperature (0.7) and max_tokens (500/800) for simplicity
+  - Streaming version shows real-time response generation
 
 ### 4. OpenAI SDK .NET (CLI)
 - **Files**: `samples/04-openai-dotnet-cli/`
