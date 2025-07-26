@@ -1,0 +1,105 @@
+### AI Foundry Direct API Sample
+### This file demonstrates direct HTTP calls to AI Foundry models
+### Use the VS Code REST Client extension to execute these requests
+### Make sure to configure your .env file with the correct endpoints and keys
+
+@endpoint = {{$dotenv AZURE_OPENAI_ENDPOINT}}
+@apiKey = {{$dotenv AZURE_OPENAI_API_KEY}}
+@deploymentName = {{$dotenv AZURE_OPENAI_DEPLOYMENT_NAME}}
+@apiVersion = {{$dotenv AZURE_OPENAI_API_VERSION}}
+
+### Basic Chat Completion Request
+POST {{endpoint}}/openai/deployments/{{deploymentName}}/chat/completions?api-version={{apiVersion}}
+Content-Type: application/json
+api-key: {{apiKey}}
+
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant."
+    },
+    {
+      "role": "user",
+      "content": "Hello! Can you tell me a short joke?"
+    }
+  ],
+  "max_tokens": 150,
+  "temperature": 0.7
+}
+
+###
+
+### Chat Completion with Conversation History
+POST {{endpoint}}/openai/deployments/{{deploymentName}}/chat/completions?api-version={{apiVersion}}
+Content-Type: application/json
+api-key: {{apiKey}}
+
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant that provides concise, accurate answers."
+    },
+    {
+      "role": "user",
+      "content": "What is the capital of France?"
+    },
+    {
+      "role": "assistant",
+      "content": "The capital of France is Paris."
+    },
+    {
+      "role": "user",
+      "content": "What is the population of that city?"
+    }
+  ],
+  "max_tokens": 100,
+  "temperature": 0.3
+}
+
+###
+
+### Different Temperature Settings (Creative vs Factual)
+POST {{endpoint}}/openai/deployments/{{deploymentName}}/chat/completions?api-version={{apiVersion}}
+Content-Type: application/json
+api-key: {{apiKey}}
+
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a factual information assistant."
+    },
+    {
+      "role": "user",
+      "content": "Explain photosynthesis in simple terms."
+    }
+  ],
+  "max_tokens": 150,
+  "temperature": 0.1
+}
+
+###
+
+### Higher Temperature for Creative Response
+POST {{endpoint}}/openai/deployments/{{deploymentName}}/chat/completions?api-version={{apiVersion}}
+Content-Type: application/json
+api-key: {{apiKey}}
+
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a creative storyteller."
+    },
+    {
+      "role": "user",
+      "content": "Tell me an imaginative story about a talking tree."
+    }
+  ],
+  "max_tokens": 200,
+  "temperature": 0.9
+}
+
+###
