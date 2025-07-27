@@ -70,7 +70,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 2. OpenAI Python (Notebook) | Jupyter notebook with OpenAI SDK | ✅ Complete | Interactive exploration |
 | 3. OpenAI Python (CLI) | Command line app with OpenAI SDK | ✅ Complete | Loop until user quits |
 | 4. OpenAI .NET (CLI) | Command line app with OpenAI .NET SDK | ✅ Complete | Loop until user quits |
-| 5. LangChain (Notebook) | Jupyter notebook with LangChain | ⏳ Pending | Python notebook format |
+| 5. LangChain (Notebook) | Jupyter notebook with LangChain | ✅ Complete | Python notebook format |
 | 6. Semantic Kernel .NET | Command line app with Semantic Kernel | ⏳ Pending | Loop until user quits |
 | 7. AI Foundry SDK .NET | Command line app with AI Foundry SDK | ⏳ Pending | Native Foundry integration |
 | 8. Multi-Model Foundry | Compare OpenAI vs Phi-4 models | ⏳ Pending | Two model comparison |
@@ -133,12 +133,15 @@ PHI_MODEL_DEPLOYMENT=phi-4
 
 ### 5. LangChain Python (Notebook)
 - **File**: `samples/05-langchain-notebook/langchain-sample.ipynb`
-- **Purpose**: Demonstrate LangChain integration with AI Foundry
+- **Purpose**: Interactive exploration of LangChain integration with AI Foundry
 - **Usage**: Run cells in Jupyter notebook environment
 - **Features**:
-  - LangChain setup with Azure OpenAI
-  - Basic chain execution
-  - Response handling
+  - LangChain ChatOpenAI setup with Azure OpenAI
+  - Prompt templates with variable substitution
+  - Conversation memory and chain operations
+  - Temperature comparison examples
+  - Interactive playground function
+  - Clean, educational code focused on core LangChain concepts
 
 ### 6. Semantic Kernel .NET
 - **Files**: `samples/06-semantic-kernel-dotnet/`
