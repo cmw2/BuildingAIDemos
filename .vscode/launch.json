@@ -2,6 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Sample 12 - Prompt Templating Semantic Kernel",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/samples/12-prompt-templating-semantic-kernel/bin/Debug/net8.0/12-prompt-templating-semantic-kernel.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/samples/12-prompt-templating-semantic-kernel",
+            "console": "integratedTerminal",
+            "stopAtEntry": false,
+            "requireExactSource": false,
+            "preLaunchTask": "build-sample-12"
+        },
+        {
             "name": "Launch Sample 11 - Tool Calling Semantic Kernel",
             "type": "coreclr",
             "request": "launch",

@@ -10,6 +10,8 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Azure.Monitor.OpenTelemetry.Exporter;
+using System.Diagnostics;
 
 // Sample 12: Prompt Templating - Semantic Kernel
 //
@@ -29,13 +31,19 @@ Env.Load("../../.env");
 var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
 var apiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!;
 var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
+var appInsightsConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");;
 
 Console.WriteLine("📄 Prompt Templating - Semantic Kernel");
 Console.WriteLine("Demonstrating dynamic prompt generation with real-time data!\n");
 
 // Setup comprehensive telemetry and logging
-var (loggerFactory, tracerProvider) = SetupOpenTelemetry();
-Console.WriteLine("🔍 Full OpenTelemetry enabled - you'll see all telemetry data\n");
+var (loggerFactory, tracerProvider, meterProvider) = SetupOpenTelemetry(appInsightsConnectionString);
+Console.WriteLine("🔍 Full OpenTelemetry enabled - you'll see all telemetry data");
+if (!string.IsNullOrEmpty(appInsightsConnectionString))
+{
+    Console.WriteLine("📊 Application Insights logging enabled");
+}
+Console.WriteLine();
 
 // Create Semantic Kernel with Azure OpenAI
 var builder = Kernel.CreateBuilder()
@@ -113,6 +121,15 @@ while (true)
         userInput.Equals("q", StringComparison.OrdinalIgnoreCase))
     {
         Console.WriteLine("👋 Goodbye!");
+        
+       
+        // Dispose resources (this will automatically flush pending data)
+        tracerProvider?.Dispose();
+        meterProvider?.Dispose();
+        loggerFactory?.Dispose();
+        
+        // Give extra time for Azure Monitor to receive data
+        await Task.Delay(500);
         break;
     }
 
@@ -148,40 +165,71 @@ while (true)
 /// <summary>
 /// Setup comprehensive OpenTelemetry logging and tracing for Semantic Kernel operations.
 /// </summary>
-/// <returns>Tuple containing the configured logger factory and tracer provider (both must be kept alive)</returns>
-static (ILoggerFactory loggerFactory, TracerProvider tracerProvider) SetupOpenTelemetry()
+/// <param name="appInsightsConnectionString">Optional Application Insights connection string for Azure Monitor logging</param>
+/// <returns>Tuple containing the configured logger factory, tracer provider, and meter provider (all must be kept alive)</returns>
+static (ILoggerFactory loggerFactory, TracerProvider tracerProvider, MeterProvider meterProvider) SetupOpenTelemetry(string? appInsightsConnectionString = null)
 {
     var resourceBuilder = ResourceBuilder.CreateDefault()
-        .AddService("prompt-templating-semantic-kernel-sample");
+        .AddService("prompt-templating-semantic-kernel-sample", "1.0.0")
+        .AddAttributes(new Dictionary<string, object>
+        {
+            ["environment"] = "development",
+            ["session.id"] = Guid.NewGuid().ToString(),
+            ["machine.name"] = Environment.MachineName
+        });
 
-    // Enable model diagnostics with sensitive data.
+    // Enable model diagnostics with sensitive data for debugging
     AppContext.SetSwitch("Microsoft.SemanticKernel.Experimental.GenAI.EnableOTelDiagnosticsSensitive", true);
 
-    var tracerProvider = Sdk.CreateTracerProviderBuilder()
+    var tracerProviderBuilder = Sdk.CreateTracerProviderBuilder()
         .SetResourceBuilder(resourceBuilder)
         .AddSource("Microsoft.SemanticKernel*")
-        .AddConsoleExporter()
-        .Build();
+        //.AddConsoleExporter()
+        ;
+    
+    // Add Azure Monitor (Application Insights) if connection string is provided
+    if (!string.IsNullOrEmpty(appInsightsConnectionString))
+    {
+        tracerProviderBuilder.AddAzureMonitorTraceExporter(azureOptions => 
+            azureOptions.ConnectionString = appInsightsConnectionString);
+    }
+    
+    var tracerProvider = tracerProviderBuilder.Build();
 
-    // var meterProvider = Sdk.CreateMeterProviderBuilder()
-    //     .SetResourceBuilder(resourceBuilder)
-    //     .AddMeter("Microsoft.SemanticKernel*")
-    //     .AddConsoleExporter()
-    //     .Build();
+    var meterProviderBuilder = Sdk.CreateMeterProviderBuilder()
+        .SetResourceBuilder(resourceBuilder)
+        .AddMeter("Microsoft.SemanticKernel*")
+        //.AddConsoleExporter()
+        ;
+    
+    // Add Azure Monitor (Application Insights) if connection string is provided
+    if (!string.IsNullOrEmpty(appInsightsConnectionString))
+    {
+        meterProviderBuilder.AddAzureMonitorMetricExporter(azureOptions => 
+            azureOptions.ConnectionString = appInsightsConnectionString);
+    }
+    
+    var meterProvider = meterProviderBuilder.Build();
 
     var loggerFactory = LoggerFactory.Create(builder =>
     {
         builder.AddOpenTelemetry(options =>
         {
             options.SetResourceBuilder(resourceBuilder);
-            options.AddConsoleExporter();
+            //options.AddConsoleExporter();
+            // Add Azure Monitor (Application Insights) if connection string is provided
+            if (!string.IsNullOrEmpty(appInsightsConnectionString))
+            {
+                options.AddAzureMonitorLogExporter(azureOptions => 
+                    azureOptions.ConnectionString = appInsightsConnectionString);
+            }
             options.IncludeFormattedMessage = true;
             options.IncludeScopes = true;
         });
         builder.SetMinimumLevel(LogLevel.Information);
     });
 
-    return (loggerFactory, tracerProvider);
+    return (loggerFactory, tracerProvider, meterProvider);
 }
 
 /// <summary>
