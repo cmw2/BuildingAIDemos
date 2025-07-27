@@ -2,6 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Sample 11 - Tool Calling Semantic Kernel",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/samples/11-tool-calling-semantic-kernel/bin/Debug/net8.0/11-tool-calling-semantic-kernel.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/samples/11-tool-calling-semantic-kernel",
+            "console": "integratedTerminal",
+            "stopAtEntry": false,
+            "requireExactSource": false,
+            "preLaunchTask": "build-sample-11"
+        },
+        {
             "name": "Launch Sample 10 - Tool Calling Manual",
             "type": "coreclr",
             "request": "launch",

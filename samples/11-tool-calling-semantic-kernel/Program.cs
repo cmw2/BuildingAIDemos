@@ -58,8 +58,30 @@ Console.WriteLine("- What's the weather like in Seattle?");
 Console.WriteLine("- Tell me the time in ISO format");
 Console.WriteLine("- What's the weather in Paris in celsius?\n");
 
-// Initialize conversation history
-var chatHistory = new ChatHistory("You are a helpful assistant that can provide information about the current date/time and weather. Use the available functions when needed.  Provide answers that are simple and helpful to the user.  If the user asks about time for a particular location get it in ISO format and convert it to the appropriate time zone, as needed.  Always convert back to a simple time format to display to user unless they specifically ask for iso or indicate they want the more complicated form.");
+// Load and render system prompt using template factory with real-time data
+var systemPromptPath = Path.Combine(Directory.GetCurrentDirectory(), "system-prompt.txt");
+var systemPromptTemplate = await File.ReadAllTextAsync(systemPromptPath);
+
+var promptTemplateFactory = new KernelPromptTemplateFactory();
+var promptTemplate = promptTemplateFactory.Create(new PromptTemplateConfig(systemPromptTemplate));
+
+// Get current time using our TimePlugin for consistency
+var timePlugin = new TimePlugin();
+var currentTime = timePlugin.GetCurrentDateTime("long");
+
+// Render the template with context variables
+var promptArgs = new KernelArguments
+{
+    ["city"] = "Lancaster, PA",
+    ["currentTime"] = currentTime
+};
+
+var systemPrompt = await promptTemplate.RenderAsync(kernel, promptArgs);
+Console.WriteLine($"📄 Rendered system prompt with real-time data");
+Console.WriteLine($"🕐 Current time captured: {currentTime}");
+
+// Initialize conversation history with rendered system prompt
+var chatHistory = new ChatHistory(systemPrompt);
 
 while (true)
 {
