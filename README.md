@@ -15,7 +15,8 @@ IntroDemos/
 │   ├── 02-openai-python-notebook/
 │   │   └── openai-sample.ipynb
 │   ├── 03-openai-python-cli/
-│   │   └── openai-cli.py
+│   │   ├── openai-cli.py
+│   │   └── openai-streaming-cli.py
 │   ├── 04-openai-dotnet-cli/
 │   │   ├── OpenAI.Sample.csproj
 │   │   └── Program.cs
@@ -68,7 +69,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 1. Direct API | HTTP file for REST client extension | ✅ Complete | Uses .http file format |
 | 2. OpenAI Python (Notebook) | Jupyter notebook with OpenAI SDK | ✅ Complete | Interactive exploration |
 | 3. OpenAI Python (CLI) | Command line app with OpenAI SDK | ✅ Complete | Loop until user quits |
-| 4. OpenAI .NET (CLI) | Command line app with OpenAI .NET SDK | ⏳ Pending | Loop until user quits |
+| 4. OpenAI .NET (CLI) | Command line app with OpenAI .NET SDK | ✅ Complete | Loop until user quits |
 | 5. LangChain (Notebook) | Jupyter notebook with LangChain | ⏳ Pending | Python notebook format |
 | 6. Semantic Kernel .NET | Command line app with Semantic Kernel | ⏳ Pending | Loop until user quits |
 | 7. AI Foundry SDK .NET | Command line app with AI Foundry SDK | ⏳ Pending | Native Foundry integration |
@@ -117,13 +118,18 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Streaming version shows real-time response generation
 
 ### 4. OpenAI SDK .NET (CLI)
-- **Files**: `samples/04-openai-dotnet-cli/`
-- **Purpose**: Command line application using OpenAI .NET SDK
-- **Usage**: `dotnet run`
+- **Files**: 
+  - `samples/04-openai-dotnet-cli/OpenAI.Sample.csproj` - Project file
+  - `samples/04-openai-dotnet-cli/Program.cs` - Main application
+- **Purpose**: Command line application using Azure OpenAI .NET SDK
+- **Usage**: `cd samples/04-openai-dotnet-cli && dotnet run`
 - **Features**:
-  - Continuous input loop
-  - Configuration from .env file
-  - Graceful exit on quit
+  - Continuous input loop until user types 'quit'
+  - Environment-based configuration from .env file using DotNetEnv
+  - Error handling with graceful degradation
+  - Console color formatting for better UX
+  - Hardcoded temperature (0.7) and max_tokens (500) for simplicity
+  - Async/await pattern for non-blocking operations
 
 ### 5. LangChain Python (Notebook)
 - **File**: `samples/05-langchain-notebook/langchain-sample.ipynb`
