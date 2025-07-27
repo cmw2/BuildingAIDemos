@@ -1,0 +1,55 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-sample-09",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/samples/09-multimodal-storage/09-multimodal-storage.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "build-sample-07",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/samples/07-ai-foundry-sdk/07-ai-foundry-sdk.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
+        },
+        {
+            "label": "build-all-samples",
+            "dependsOrder": "parallel",
+            "dependsOn": [
+                "build-sample-07",
+                "build-sample-09"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "watch-sample-09",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/samples/09-multimodal-storage/09-multimodal-storage.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

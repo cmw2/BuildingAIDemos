@@ -72,8 +72,8 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 4. OpenAI .NET (CLI) | Command line app with OpenAI .NET SDK | ✅ Complete | Loop until user quits |
 | 5. LangChain (Notebook) | Jupyter notebook with LangChain | ✅ Complete | Python notebook format |
 | 6. Semantic Kernel .NET | Command line app with Semantic Kernel | ✅ Complete | Loop until user quits |
-| 7. AI Foundry SDK .NET | Command line app with AI Foundry SDK | ⏳ Pending | Native Foundry integration |
-| 8. Multi-Model Foundry | Compare OpenAI vs Phi-4 models | ⏳ Pending | Two model comparison |
+| 7. AI Foundry SDK .NET | Command line app with AI Foundry SDK | ✅ Complete | Native Foundry integration |
+| 8. Multi-Model Foundry | Compare OpenAI vs Phi-4 models | ✅ Complete | Two model comparison |
 
 ### Status Legend
 - ⏳ Pending - Not started
