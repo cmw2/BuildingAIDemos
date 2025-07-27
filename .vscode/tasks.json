@@ -2,6 +2,19 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "build-sample-11",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/samples/11-tool-calling-semantic-kernel/11-tool-calling-semantic-kernel.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
+        },
+        {
             "label": "build-sample-10",
             "command": "dotnet",
             "type": "process",
@@ -49,7 +62,8 @@
             "dependsOn": [
                 "build-sample-07",
                 "build-sample-09",
-                "build-sample-10"
+                "build-sample-10",
+                "build-sample-11"
             ],
             "group": "build"
         },

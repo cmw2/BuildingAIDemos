@@ -34,8 +34,11 @@ IntroDemos/
 │   ├── 09-multimodal-storage/
 │   │   ├── MultimodalStorage.Sample.csproj
 │   │   └── Program.cs
-│   └── 10-tool-calling-manual/
-│       ├── 10-tool-calling-manual.csproj
+│   ├── 10-tool-calling-manual/
+│   │   ├── 10-tool-calling-manual.csproj
+│   │   └── Program.cs
+│   └── 11-tool-calling-semantic-kernel/
+│       ├── 11-tool-calling-semantic-kernel.csproj
 │       └── Program.cs
 ```
 
@@ -82,6 +85,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 8. Multi-Model Foundry | Compare OpenAI vs Phi-4 models | ✅ Complete | Two model comparison |
 | 9. Multimodal Storage | AI Foundry with blob storage integration | ✅ Complete | Image analysis with connected resources |
 | 10. Tool Calling Manual | Manual function calling with Azure OpenAI SDK | ✅ Complete | Date/time and weather functions |
+| 11. Tool Calling Semantic Kernel | Auto function calling with Semantic Kernel | ✅ Complete | Same functions, automatic execution |
 
 ### Status Legend
 - ⏳ Pending - Not started
@@ -208,6 +212,18 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Strongly-typed parameter handling with Dictionary<string, object>
   - Interactive chat loop with function calling capabilities
   - Demonstrates ChatTool.CreateFunctionTool and ChatToolCall processing
+
+### 11. Tool Calling - Semantic Kernel Auto Implementation
+- **Files**: `samples/11-tool-calling-semantic-kernel/`
+- **Purpose**: Automatic tool calling implementation using Semantic Kernel
+- **Usage**: `cd samples/11-tool-calling-semantic-kernel && dotnet run`
+- **Features**:
+  - Automatic function calling "the easy way" using Semantic Kernel
+  - Attribute-based function definitions with [KernelFunction] and [Description]
+  - Auto-discovery and registration of functions via reflection
+  - Built-in tool call handling with ToolCallBehavior.AutoInvokeKernelFunctions
+  - Same date/time and weather functions as Sample 10 but with much cleaner code
+  - Demonstrates the power of Semantic Kernel's plugin architecture
 
 ## Getting Started
 
