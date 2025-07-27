@@ -4,17 +4,17 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.ComponentModel;
 using DotNetEnv;
 
-// Sample 11: Tool Calling - Semantic Kernel Auto Implementation
+// Sample 12: Prompt Templating - Semantic Kernel
 //
-// Demonstrates how to implement tool calling automatically using Semantic Kernel.
-// Shows the "easy way" of handling tool calls by letting Semantic Kernel:
-// - Automatically discover and register functions via attributes
-// - Handle tool call parsing and execution
-// - Manage conversation flow with functions
-// - Organize functions into separate plugin classes for better separation of concerns
+// Demonstrates how to use prompt templating with Semantic Kernel.
+// Shows how to:
+// - Load template files and render them with dynamic data
+// - Use template variables and substitution
+// - Combine tool calling with dynamic prompt generation
+// - Manage real-time data injection into system prompts
 //
-// This is a clean, focused example of automatic tool calling without additional complexity.
-// Compare this to Sample 10 which shows the manual implementation approach.
+// This builds on Sample 11's tool calling foundation by adding sophisticated
+// prompt templating capabilities for more dynamic AI interactions.
 
 // Load environment variables
 Env.Load("../../.env");
@@ -23,8 +23,8 @@ var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
 var apiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!;
 var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
 
-Console.WriteLine("🛠️  Tool Calling - Semantic Kernel Auto Implementation");
-Console.WriteLine("Ask questions about the current date, time, or weather!\n");
+Console.WriteLine("📄 Prompt Templating - Semantic Kernel");
+Console.WriteLine("Demonstrating dynamic prompt generation with real-time data!\n");
 
 // Create Semantic Kernel with Azure OpenAI
 var builder = Kernel.CreateBuilder()
@@ -59,20 +59,31 @@ Console.WriteLine("- What's the weather like in Seattle?");
 Console.WriteLine("- Tell me the time in ISO format");
 Console.WriteLine("- What's the weather in Paris in celsius?\n");
 
-// Initialize conversation history with a multiline system prompt
-var systemPrompt = """
-    You are a helpful AI assistant with access to real-time tools for date/time and weather information.
-    
-    Use the available tools to provide accurate, up-to-date information when users ask questions about:
-    - Current date and time (in various formats)
-    - Weather conditions for any location
-    
-    Always be helpful, accurate, and conversational in your responses.
-    If the user is asking about time in a particular location, 
-    get the current time in iso format and do any needed timezone adjustments 
-    showing them the time local to their specified location.
-    """;
+// Load and render system prompt using template factory with real-time data
+var systemPromptPath = Path.Combine(Directory.GetCurrentDirectory(), "system-prompt.txt");
+var systemPromptTemplate = await File.ReadAllTextAsync(systemPromptPath);
 
+var promptTemplateFactory = new KernelPromptTemplateFactory();
+var promptTemplate = promptTemplateFactory.Create(new PromptTemplateConfig(systemPromptTemplate));
+
+// Get current time using our TimePlugin for consistency
+var timePlugin = new TimePlugin();
+var currentTime = timePlugin.GetCurrentDateTime("long");
+
+// Render the template with context variables
+var promptArgs = new KernelArguments
+{
+    ["city"] = "Lancaster, PA",
+    ["currentTime"] = currentTime
+};
+
+var systemPrompt = await promptTemplate.RenderAsync(kernel, promptArgs);
+Console.WriteLine($"📄 Rendered system prompt with real-time data");
+Console.WriteLine($"🕐 Current time captured: {currentTime}");
+Console.WriteLine($"🏙️  Local city set to: Lancaster, PA");
+Console.WriteLine($"📝 System prompt template variables: {{$currentTime}}, {{$city}}\n");
+
+// Initialize conversation history with rendered system prompt
 var chatHistory = new ChatHistory(systemPrompt);
 
 while (true)

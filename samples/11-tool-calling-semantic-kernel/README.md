@@ -1,10 +1,6 @@
-# Sample 11: Tool Calling - Semantic Kernel Auto Imp3. **Type Safety**: Function parameters are strongly typed with compile-time checking
-4. **Attribute-Based**: Clean, declarative function definitions using C# attributes
-5. **Plugin Architecture**: Logical separation of concerns with dedicated plugin classes
-6. **Built-in Error Handling**: Framework handles many edge cases automatically
-7. **Maintainability**: Easier to add new functions - just add methods with attributes to appropriate plugin classesntation
+# Sample 11: Tool Calling - Semantic Kernel Auto Implementation
 
-This sample demonstrates automatic function calling using Semantic Kernel, providing a much simpler alternative to the manual implementation shown in Sample 10.
+This sample demonstrates automatic function calling using Semantic Kernel, providing a much simpler and cleaner alternative to the manual implementation shown in Sample 10.
 
 ## Key Features
 
@@ -13,11 +9,12 @@ This sample demonstrates automatic function calling using Semantic Kernel, provi
 - **Clean Code**: Much simpler implementation compared to manual tool calling
 - **Organized Plugin Architecture**: Functions are separated into logical plugin classes (TimePlugin and WeatherPlugin)
 - **Same Functions**: Implements the same `get_current_datetime` and `get_weather` functions as Sample 10
+- **Focused Example**: Pure tool calling without additional complexity like prompt templating
 
 ## How It Works
 
 1. **Plugin Definition**: Functions are defined as methods in separate plugin classes (TimePlugin, WeatherPlugin) with `[KernelFunction]` attributes
-2. **Auto Registration**: `kernel.ImportPluginFromType<>()` automatically registers all functions from each plugin class
+2. **Auto Registration**: `builder.Plugins.AddFromType<>()` automatically registers all functions from each plugin class
 3. **Auto Execution**: `ToolCallBehavior.AutoInvokeKernelFunctions` enables automatic function calling
 4. **Seamless Experience**: The user gets the same functionality with much less code and better organization
 
@@ -31,6 +28,14 @@ This sample demonstrates automatic function calling using Semantic Kernel, provi
 | Error Handling | Manual implementation | Built-in by framework |
 | Function Discovery | Static dictionary lookup | Reflection-based discovery |
 
+## Benefits of Semantic Kernel Auto Implementation
+
+1. **Less Code**: Significantly reduced boilerplate compared to manual implementation
+2. **Type Safety**: Function parameters are strongly typed with compile-time checking
+3. **Attribute-Based**: Clean, declarative function definitions using C# attributes
+4. **Plugin Architecture**: Logical separation of concerns with dedicated plugin classes
+5. **Built-in Error Handling**: Framework handles many edge cases automatically
+6. **Maintainability**: Easier to add new functions - just add methods with attributes to appropriate plugin classes
 ## Usage
 
 ```bash
@@ -51,18 +56,10 @@ You: Tell me the time in ISO format
 🤖 Assistant: The current time in ISO format is 2025-07-27T14:30:15.123Z.
 ```
 
-## Key Benefits of Semantic Kernel Approach
-
-1. **Less Boilerplate**: No need to manually define JSON schemas or parse tool calls
-2. **Type Safety**: Function parameters are strongly typed with compile-time checking
-3. **Attribute-Based**: Clean, declarative function definitions using C# attributes
-4. **Built-in Error Handling**: Framework handles many edge cases automatically
-5. **Maintainability**: Easier to add new functions - just add methods with attributes
-
 ## Learning Objectives
 
-- Understand how Semantic Kernel simplifies function calling
-- Compare manual vs automatic tool calling approaches
-- Learn about plugin architecture in Semantic Kernel with multiple plugin classes
-- See the power of attribute-based programming for AI functions
-- Understand separation of concerns through dedicated plugin classes
+- Understand automatic function registration using attributes
+- Learn how `ToolCallBehavior.AutoInvokeKernelFunctions` simplifies tool calling
+- See clean plugin architecture with separated concerns
+- Appreciate the reduction in boilerplate code compared to manual implementation
+- Observe debugging output to understand automatic function execution

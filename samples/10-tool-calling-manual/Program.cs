@@ -218,14 +218,12 @@ static string GetCurrentDateTime(string format = "short")
 {
     try
     {
-        var now = DateTime.Now;
-        
         return format.ToLower() switch
         {
-            "short" => now.ToString("M/d/yyyy h:mm tt"),
-            "long" => now.ToString("dddd, MMMM dd, yyyy 'at' h:mm:ss tt"),
-            "iso" => now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
-            _ => now.ToString("M/d/yyyy h:mm tt")
+            "short" => DateTime.Now.ToString("M/d/yyyy h:mm tt"),
+            "long" => DateTime.Now.ToString("dddd, MMMM dd, yyyy 'at' h:mm:ss tt"),
+            "iso" => DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+            _ => DateTime.Now.ToString("M/d/yyyy h:mm tt")
         };
     }
     catch (Exception ex)
