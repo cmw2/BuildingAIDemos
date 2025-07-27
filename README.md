@@ -71,7 +71,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 3. OpenAI Python (CLI) | Command line app with OpenAI SDK | ✅ Complete | Loop until user quits |
 | 4. OpenAI .NET (CLI) | Command line app with OpenAI .NET SDK | ✅ Complete | Loop until user quits |
 | 5. LangChain (Notebook) | Jupyter notebook with LangChain | ✅ Complete | Python notebook format |
-| 6. Semantic Kernel .NET | Command line app with Semantic Kernel | ⏳ Pending | Loop until user quits |
+| 6. Semantic Kernel .NET | Command line app with Semantic Kernel | ✅ Complete | Loop until user quits |
 | 7. AI Foundry SDK .NET | Command line app with AI Foundry SDK | ⏳ Pending | Native Foundry integration |
 | 8. Multi-Model Foundry | Compare OpenAI vs Phi-4 models | ⏳ Pending | Two model comparison |
 
@@ -144,13 +144,21 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Clean, educational code focused on core LangChain concepts
 
 ### 6. Semantic Kernel .NET
-- **Files**: `samples/06-semantic-kernel-dotnet/`
-- **Purpose**: Command line application using Semantic Kernel
-- **Usage**: `dotnet run`
+- **Files**: 
+  - `samples/06-semantic-kernel-dotnet/nonstreaming/` - Standard responses
+  - `samples/06-semantic-kernel-dotnet/streaming/` - Streaming responses
+- **Purpose**: Command line application using Semantic Kernel with Azure OpenAI
+- **Usage**: 
+  - Standard: `cd samples/06-semantic-kernel-dotnet/nonstreaming && dotnet run`
+  - Streaming: `cd samples/06-semantic-kernel-dotnet/streaming && dotnet run`
 - **Features**:
-  - Semantic Kernel setup
-  - Continuous input loop
-  - Plugin-free simple completion
+  - Continuous input loop until user types 'quit'
+  - Environment-based configuration from .env file using DotNetEnv
+  - Chat history maintained throughout conversation
+  - Clean, simple code focused on Semantic Kernel essentials
+  - Hardcoded temperature (0.7) and max_tokens (500) for simplicity
+  - Uses Semantic Kernel's ChatHistory for conversation management
+  - Streaming version shows real-time response generation
 
 ### 7. AI Foundry SDK .NET
 - **Files**: `samples/07-foundry-sdk-dotnet/`
