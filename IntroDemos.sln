@@ -9,6 +9,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06-semantic-kernel-dotnet",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07-foundry-sdk-dotnet", "07-foundry-sdk-dotnet", "{D3C4D5E6-A7B8-C9DA-EBFB-345678901CDE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-openai-python-notebook", "02-openai-python-notebook", "{A1B2C3D4-E5F6-7890-ABCD-123456789012}"
+	ProjectSection(SolutionItems) = preProject
+		samples\02-openai-python-notebook\openai-sample.ipynb = samples\02-openai-python-notebook\openai-sample.ipynb
+		samples\02-openai-python-notebook\README.md = samples\02-openai-python-notebook\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03-openai-python-cli", "03-openai-python-cli", "{B2C3D4E5-F6A7-8901-BCDE-234567890123}"
+	ProjectSection(SolutionItems) = preProject
+		samples\03-openai-python-cli\openai-cli.py = samples\03-openai-python-cli\openai-cli.py
+		samples\03-openai-python-cli\openai-streaming-cli.py = samples\03-openai-python-cli\openai-streaming-cli.py
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05-langchain-notebook", "05-langchain-notebook", "{C3D4E5F6-A7B8-9012-CDEF-345678901234}"
+	ProjectSection(SolutionItems) = preProject
+		samples\05-langchain-notebook\langchain-sample.ipynb = samples\05-langchain-notebook\langchain-sample.ipynb
+	EndProjectSection
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAI.NonStreaming.Sample", "samples\04-openai-dotnet-cli\nonstreaming\OpenAI.NonStreaming.Sample.csproj", "{E19EFCE1-19B2-4793-A1CB-09D882E7A2C5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAI.Streaming.Sample", "samples\04-openai-dotnet-cli\streaming\OpenAI.Streaming.Sample.csproj", "{804A5D11-B97A-468E-A343-A1F90029B613}"
