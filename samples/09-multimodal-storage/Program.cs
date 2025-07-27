@@ -17,7 +17,7 @@ using DotNetEnv;
 // and demonstrate how AI Foundry coordinates multi-service workflows.
 
 // Load environment variables
-Env.Load("../../.env");
+Env.Load(".env");
 
 // Get configuration from environment
 var projectEndpoint = Environment.GetEnvironmentVariable("AI_FOUNDRY_ENDPOINT")!;

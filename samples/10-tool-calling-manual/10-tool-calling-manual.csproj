@@ -15,4 +15,11 @@
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="../../.env">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>.env</Link>
+    </Content>
+  </ItemGroup>
+
 </Project>
