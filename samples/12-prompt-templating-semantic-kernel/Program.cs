@@ -3,6 +3,13 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.ComponentModel;
 using DotNetEnv;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using OpenTelemetry;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 // Sample 12: Prompt Templating - Semantic Kernel
 //
@@ -26,12 +33,48 @@ var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT
 Console.WriteLine("📄 Prompt Templating - Semantic Kernel");
 Console.WriteLine("Demonstrating dynamic prompt generation with real-time data!\n");
 
+// Configure comprehensive OpenTelemetry to see all activity
+var resourceBuilder = ResourceBuilder.CreateDefault()
+    .AddService("prompt-templating-semantic-kernel-sample");
+
+// Enable model diagnostics with sensitive data.
+AppContext.SetSwitch("Microsoft.SemanticKernel.Experimental.GenAI.EnableOTelDiagnosticsSensitive", true);
+
+using var tracerProvider = Sdk.CreateTracerProviderBuilder()
+    .SetResourceBuilder(resourceBuilder)
+    .AddSource("Microsoft.SemanticKernel*")
+    .AddConsoleExporter()
+    .Build();
+
+// using var meterProvider = Sdk.CreateMeterProviderBuilder()
+//     .SetResourceBuilder(resourceBuilder)
+//     .AddMeter("Microsoft.SemanticKernel*")
+//     .AddConsoleExporter()
+//     .Build();
+
+using var loggerFactory = LoggerFactory.Create(builder =>
+{
+    builder.AddOpenTelemetry(options =>
+    {
+        options.SetResourceBuilder(resourceBuilder);
+        options.AddConsoleExporter();
+        options.IncludeFormattedMessage = true;
+        options.IncludeScopes = true;
+    });
+    builder.SetMinimumLevel(LogLevel.Information);
+});
+
+Console.WriteLine("🔍 Full OpenTelemetry enabled - you'll see all telemetry data\n");
+
 // Create Semantic Kernel with Azure OpenAI
 var builder = Kernel.CreateBuilder()
     .AddAzureOpenAIChatCompletion(
         deploymentName: deploymentName,
         endpoint: endpoint,
         apiKey: apiKey);
+
+// Add logging to see function calls
+builder.Services.AddSingleton(loggerFactory);
 
 // IMPORTANT: Import plugins BEFORE building the kernel!
 // Once kernel.Build() is called, the kernel becomes immutable.
@@ -40,6 +83,114 @@ builder.Plugins.AddFromType<TimePlugin>("Time");
 builder.Plugins.AddFromType<WeatherPlugin>("Weather");
 
 var kernel = builder.Build();
+
+// Add prompt-based functions directly to the kernel
+// These are callable functions that use prompt templates for text processing
+kernel.Plugins.Add(KernelPluginFactory.CreateFromFunctions("TextProcessing", new[]
+{
+    kernel.CreateFunctionFromPrompt(
+        new PromptTemplateConfig
+        {
+            Name = "analyze_sentiment",
+            Description = "Analyze the emotional sentiment and tone of text",
+            Template = """
+                Analyze the sentiment and emotional tone of the following text.
+                
+                Text to analyze: {{$text}}
+                
+                Provide your analysis in this format:
+                - Overall Sentiment: [Positive/Negative/Neutral]
+                - Confidence: [High/Medium/Low]
+                - Key Emotions: [list main emotions detected]
+                - Tone: [describe the overall tone]
+                - Brief Explanation: [1-2 sentences explaining your analysis]
+                """,
+            InputVariables = new List<InputVariable>
+            {
+                new InputVariable { Name = "text", Description = "The text to analyze for sentiment", IsRequired = true }
+            }
+        }),
+
+    kernel.CreateFunctionFromPrompt(
+        new PromptTemplateConfig
+        {
+            Name = "format_as_email",
+            Description = "Convert informal text into a professional email format",
+            Template = """
+                Convert the following informal text into a professional email format.
+                
+                Informal text: {{$informalText}}
+                Subject: {{$subject}}
+                
+                Create a well-structured professional email with:
+                - Appropriate greeting
+                - Clear subject line (use provided subject or create one if empty)
+                - Professional tone and language
+                - Proper closing
+                - Maintain the core message while improving professionalism
+                
+                Format as a complete email ready to send.
+                """,
+            InputVariables = new List<InputVariable>
+            {
+                new InputVariable { Name = "informalText", Description = "The informal text to convert into a professional email", IsRequired = true },
+                new InputVariable { Name = "subject", Description = "The subject line for the email (optional)", IsRequired = false }
+            }
+        }),
+
+    kernel.CreateFunctionFromPrompt(
+        new PromptTemplateConfig
+        {
+            Name = "create_summary",
+            Description = "Create a concise summary of long text with bullet points",
+            Template = """
+                Create a concise summary of the following text using bullet points.
+                
+                Text to summarize: {{$text}}
+                Maximum bullet points: {{$maxPoints}}
+                
+                Requirements:
+                - Use clear, concise bullet points
+                - Capture the most important information
+                - Keep each point to 1-2 sentences
+                - Prioritize key facts, decisions, or insights
+                - Use action-oriented language where appropriate
+                
+                Format as a clean bullet list.
+                """,
+            InputVariables = new List<InputVariable>
+            {
+                new InputVariable { Name = "text", Description = "The text to summarize", IsRequired = true },
+                new InputVariable { Name = "maxPoints", Description = "The maximum number of bullet points (default: 5)", IsRequired = false }
+            }
+        }),
+
+    kernel.CreateFunctionFromPrompt(
+        new PromptTemplateConfig
+        {
+            Name = "translate_tone",
+            Description = "Rewrite text to match a specific tone while preserving the message",
+            Template = """
+                Rewrite the following text to match the specified tone while preserving the core message and meaning.
+                
+                Original text: {{$originalText}}
+                Target tone: {{$targetTone}}
+                
+                Guidelines:
+                - Maintain the original meaning and key information
+                - Adjust vocabulary, sentence structure, and style to match the target tone
+                - Ensure the rewritten text feels natural and authentic
+                - Keep the same approximate length unless the tone requires significant changes
+                
+                Provide only the rewritten text.
+                """,
+            InputVariables = new List<InputVariable>
+            {
+                new InputVariable { Name = "originalText", Description = "The original text to rewrite", IsRequired = true },
+                new InputVariable { Name = "targetTone", Description = "The target tone (e.g., formal, casual, friendly, urgent, apologetic)", IsRequired = true }
+            }
+        })
+}));
 
 // Get chat completion service
 var chatService = kernel.GetRequiredService<IChatCompletionService>();
@@ -56,8 +207,10 @@ var executionSettings = new OpenAIPromptExecutionSettings
 Console.WriteLine("💬 Examples:");
 Console.WriteLine("- What's the current date and time?");
 Console.WriteLine("- What's the weather like in Seattle?");
-Console.WriteLine("- Tell me the time in ISO format");
-Console.WriteLine("- What's the weather in Paris in celsius?\n");
+Console.WriteLine("- Analyze the sentiment of this text: 'I love sunny days!'");
+Console.WriteLine("- Format this as a professional email: 'hey, can we meet tomorrow?'");
+Console.WriteLine("- Summarize this text: [paste any long text]");
+Console.WriteLine("- Tell me the time in ISO format\n");
 
 // Load and render system prompt using template factory with real-time data
 var systemPromptPath = Path.Combine(Directory.GetCurrentDirectory(), "system-prompt.txt");
@@ -143,7 +296,7 @@ public class TimePlugin
         string format = "short")
     {
         Console.WriteLine($"🕐 [DEBUG] TimePlugin.GetCurrentDateTime called with format: '{format}'");
-        
+
         try
         {
             var result = format.ToLower() switch
@@ -153,7 +306,7 @@ public class TimePlugin
                 "iso" => DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 _ => DateTime.Now.ToString("M/d/yyyy h:mm tt")
             };
-            
+
             Console.WriteLine($"🕐 [DEBUG] TimePlugin returning: '{result}'");
             return result;
         }
