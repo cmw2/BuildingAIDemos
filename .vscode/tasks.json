@@ -2,6 +2,19 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "build-sample-10",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/samples/10-tool-calling-manual/10-tool-calling-manual.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
+        },
+        {
             "label": "build-sample-09",
             "command": "dotnet",
             "type": "process",
@@ -35,7 +48,8 @@
             "dependsOrder": "parallel",
             "dependsOn": [
                 "build-sample-07",
-                "build-sample-09"
+                "build-sample-09",
+                "build-sample-10"
             ],
             "group": "build"
         },

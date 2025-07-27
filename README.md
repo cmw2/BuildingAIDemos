@@ -28,8 +28,14 @@ IntroDemos/
 │   ├── 07-foundry-sdk-dotnet/
 │   │   ├── FoundrySDK.Sample.csproj
 │   │   └── Program.cs
-│   └── 08-foundry-multi-model/
-│       ├── FoundryMultiModel.Sample.csproj
+│   ├── 08-foundry-multi-model/
+│   │   ├── FoundryMultiModel.Sample.csproj
+│   │   └── Program.cs
+│   ├── 09-multimodal-storage/
+│   │   ├── MultimodalStorage.Sample.csproj
+│   │   └── Program.cs
+│   └── 10-tool-calling-manual/
+│       ├── 10-tool-calling-manual.csproj
 │       └── Program.cs
 ```
 
@@ -74,6 +80,8 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 6. Semantic Kernel .NET | Command line app with Semantic Kernel | ✅ Complete | Loop until user quits |
 | 7. AI Foundry SDK .NET | Command line app with AI Foundry SDK | ✅ Complete | Native Foundry integration |
 | 8. Multi-Model Foundry | Compare OpenAI vs Phi-4 models | ✅ Complete | Two model comparison |
+| 9. Multimodal Storage | AI Foundry with blob storage integration | ✅ Complete | Image analysis with connected resources |
+| 10. Tool Calling Manual | Manual function calling with Azure OpenAI SDK | ✅ Complete | Date/time and weather functions |
 
 ### Status Legend
 - ⏳ Pending - Not started
@@ -177,6 +185,29 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Side-by-side comparison of GPT-4o and Phi-4
   - Same prompt sent to both models
   - Response comparison display
+
+### 9. Multimodal Storage Integration
+- **Files**: `samples/09-multimodal-storage/`
+- **Purpose**: Demonstrate AI Foundry with connected Azure Storage resources
+- **Usage**: `cd samples/09-multimodal-storage && dotnet run`
+- **Features**:
+  - Multi-modal image analysis using AI Foundry connected resources
+  - Azure Blob Storage integration with SAS token generation
+  - DefaultAzureCredential authentication with fallback strategies
+  - GPT-4o Vision model for image content analysis
+  - Demonstrates connected resource workflows in AI Foundry
+
+### 10. Tool Calling - Manual Implementation
+- **Files**: `samples/10-tool-calling-manual/`
+- **Purpose**: Manual tool calling implementation using Azure OpenAI SDK
+- **Usage**: `cd samples/10-tool-calling-manual && dotnet run`
+- **Features**:
+  - Manual tool calling "the hard way" with full control over function execution
+  - Custom function definitions for date/time and weather information
+  - JSON schema definitions for function parameters
+  - Strongly-typed parameter handling with Dictionary<string, object>
+  - Interactive chat loop with function calling capabilities
+  - Demonstrates ChatTool.CreateFunctionTool and ChatToolCall processing
 
 ## Getting Started
 

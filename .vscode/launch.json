@@ -2,6 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Sample 10 - Tool Calling Manual",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/samples/10-tool-calling-manual/bin/Debug/net8.0/10-tool-calling-manual.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/samples/10-tool-calling-manual",
+            "console": "integratedTerminal",
+            "stopAtEntry": false,
+            "requireExactSource": false,
+            "preLaunchTask": "build-sample-10"
+        },
+        {
             "name": "Launch Sample 09 - Multi-Modal Storage",
             "type": "coreclr",
             "request": "launch",
