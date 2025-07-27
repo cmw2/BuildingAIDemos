@@ -2,6 +2,12 @@
 
 This repository contains a collection of simple sample code demonstrating various methods for calling models hosted in AI Foundry. Each sample focuses on straightforward inferencing without complex features like agents or RAG.
 
+## Sample Code
+
+This repository contains sample code intended for demonstration purposes. The
+code is provided as-is and may require modifications to fit specific use cases or
+production environments.
+
 ## Project Structure
 
 ```
@@ -37,9 +43,13 @@ IntroDemos/
 │   ├── 10-tool-calling-manual/
 │   │   ├── 10-tool-calling-manual.csproj
 │   │   └── Program.cs
-│   └── 11-tool-calling-semantic-kernel/
-│       ├── 11-tool-calling-semantic-kernel.csproj
-│       └── Program.cs
+│   ├── 11-tool-calling-semantic-kernel/
+│   │   ├── 11-tool-calling-semantic-kernel.csproj
+│   │   └── Program.cs
+│   └── 12-prompt-templating-semantic-kernel/
+│       ├── 12-prompt-templating-semantic-kernel.csproj
+│       ├── Program.cs
+│       └── system-prompt.txt
 ```
 
 ## Environment Setup
@@ -86,6 +96,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 9. Multimodal Storage | AI Foundry with blob storage integration | ✅ Complete | Image analysis with connected resources |
 | 10. Tool Calling Manual | Manual function calling with Azure OpenAI SDK | ✅ Complete | Date/time and weather functions |
 | 11. Tool Calling Semantic Kernel | Auto function calling with Semantic Kernel | ✅ Complete | Same functions, automatic execution |
+| 12. Prompt Templating Semantic Kernel | Prompt templates and observability with Semantic Kernel | ✅ Complete | System prompts and telemetry tracking |
 
 ### Status Legend
 - ⏳ Pending - Not started
@@ -225,6 +236,18 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Same date/time and weather functions as Sample 10 but with much cleaner code
   - Demonstrates the power of Semantic Kernel's plugin architecture
 
+### 12. Prompt Templating and Observability - Semantic Kernel
+- **Files**: `samples/12-prompt-templating-semantic-kernel/`
+- **Purpose**: Demonstrate prompt templates and observability features with Semantic Kernel
+- **Usage**: `cd samples/12-prompt-templating-semantic-kernel && dotnet run`
+- **Features**:
+  - System prompt loading from external files (`system-prompt.txt`)
+  - Template variable substitution and management
+  - Built-in observability and telemetry tracking
+  - Semantic Kernel prompt template functionality
+  - Clean separation of prompts from code
+  - Demonstrates monitoring and logging capabilities for AI applications
+
 ## Getting Started
 
 ### Prerequisites
@@ -269,3 +292,11 @@ User: quit
 - Error handling is minimal to keep code clear and educational
 - Production applications should include proper error handling, logging, and security measures
 - Each sample is self-contained and can be run independently
+
+## Disclaimer
+
+This Sample Code is provided for the purpose of illustration only and is not
+intended to be used in a production environment. THIS SAMPLE CODE AND ANY RELATED
+INFORMATION ARE PROVIDED 'AS IS' WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
