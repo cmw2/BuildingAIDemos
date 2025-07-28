@@ -58,7 +58,7 @@ All samples use a shared `.env` file in the root directory:
 
 ```env
 # AI Foundry Configuration
-AI_FOUNDRY_ENDPOINT=https://your-project.ai.azure.com
+AI_FOUNDRY_PROJECT_CONNECTION_STRING=https://your-project.ai.azure.com
 AI_FOUNDRY_MODEL_DEPLOYMENT_NAME=gpt-4o
 
 # Azure OpenAI (for OpenAI SDK samples)

@@ -20,7 +20,7 @@ using DotNetEnv;
 Env.Load(".env");
 
 // Get configuration from environment
-var projectEndpoint = Environment.GetEnvironmentVariable("AI_FOUNDRY_ENDPOINT")!;
+var projectEndpoint = Environment.GetEnvironmentVariable("AI_FOUNDRY_PROJECT_CONNECTION_STRING")!;
 var modelDeploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
 var modelDeploymentEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_ENDPOINT")!;
 var connectedStorageName = Environment.GetEnvironmentVariable("AI_FOUNDRY_STORAGE_CONNECTION_NAME") ?? "image-storage";

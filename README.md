@@ -78,7 +78,7 @@ AZURE_OPENAI_DEPLOYMENT_NAME=your_deployment_name_here
 AZURE_OPENAI_API_VERSION=2024-02-15-preview
 
 # AI Foundry SDK Configuration
-AI_FOUNDRY_ENDPOINT=your_foundry_endpoint_here
+AI_FOUNDRY_PROJECT_CONNECTION_STRING=your_foundry_endpoint_here
 AI_FOUNDRY_API_KEY=your_foundry_api_key_here
 AI_FOUNDRY_PROJECT_NAME=your_project_name_here
 

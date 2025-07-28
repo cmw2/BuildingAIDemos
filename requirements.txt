@@ -18,3 +18,9 @@ requests>=2.31.0
 # Jupyter for notebook samples
 jupyter>=1.0.0
 ipykernel>=6.0.0
+
+semantic-kernel
+azure-ai-evaluation
+azure-identity
+azure-ai-projects
+azure-ai-inference

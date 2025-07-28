@@ -15,7 +15,7 @@ using DotNetEnv;
 Env.Load("../../.env");
 
 // Get configuration from environment
-var foundryEndpoint = Environment.GetEnvironmentVariable("AI_FOUNDRY_ENDPOINT")!;
+var foundryEndpoint = Environment.GetEnvironmentVariable("AI_FOUNDRY_PROJECT_CONNECTION_STRING")!;
 
 // Create project endpoint from foundry endpoint
 var projectEndpoint = foundryEndpoint.Replace("https://ai.azure.com", "https://").Replace("/", "") + ".inference.ai.azure.com";

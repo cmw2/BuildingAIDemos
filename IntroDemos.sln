@@ -48,6 +48,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "11-tool-calling-semantic-ke
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "12-prompt-templating-semantic-kernel", "samples\12-prompt-templating-semantic-kernel\12-prompt-templating-semantic-kernel.csproj", "{3EC88628-D830-40C7-B2D1-74A2D911AA6B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "13-ai-foundry-evaluations", "samples\13-ai-foundry-evaluations\13-ai-foundry-evaluations.csproj", "{4FD99739-E841-41D8-C3E2-85B3E022BB7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,10 @@ Global
 		{3EC88628-D830-40C7-B2D1-74A2D911AA6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EC88628-D830-40C7-B2D1-74A2D911AA6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EC88628-D830-40C7-B2D1-74A2D911AA6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FD99739-E841-41D8-C3E2-85B3E022BB7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FD99739-E841-41D8-C3E2-85B3E022BB7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FD99739-E841-41D8-C3E2-85B3E022BB7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FD99739-E841-41D8-C3E2-85B3E022BB7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

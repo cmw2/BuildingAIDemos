@@ -13,7 +13,7 @@ Demonstrates AI Foundry integration with Azure Storage for image processing work
 
 1. **Environment Variables** (add to `.env`):
 ```env
-AI_FOUNDRY_ENDPOINT=https://your-project.ai.azure.com
+AI_FOUNDRY_PROJECT_CONNECTION_STRING=https://your-project.ai.azure.com
 AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
 
 # Connected Storage Configuration

@@ -57,7 +57,7 @@ Tests three different system prompt styles:
 
 ### Environment Variables Required
 ```
-AI_FOUNDRY_ENDPOINT=your_foundry_endpoint_here
+AI_FOUNDRY_PROJECT_CONNECTION_STRING=your_foundry_endpoint_here
 AI_FOUNDRY_API_KEY=your_foundry_api_key_here
 AI_FOUNDRY_PROJECT_NAME=your_project_name_here
 OPENAI_MODEL_DEPLOYMENT=gpt-4o
