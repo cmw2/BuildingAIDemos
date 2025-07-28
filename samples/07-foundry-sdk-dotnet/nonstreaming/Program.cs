@@ -1,6 +1,5 @@
 using Azure;
 using Azure.Identity;
-using Azure.AI.Projects;
 using Azure.AI.Inference;
 using Azure.Core;
 using DotNetEnv;
@@ -11,37 +10,37 @@ using DotNetEnv;
 // Type messages, get AI responses, type 'quit' to exit.
 
 // Load environment variables
-Env.Load("../../../.env");
+// Try current directory first (for Visual Studio), then relative path (for command line)
+if (File.Exists(".env"))
+{
+    Env.Load(".env");
+}
+else
+{
+    Env.Load("../../../.env");
+}
 
 // Get configuration from environment
-var projectEndpoint = new Uri(Environment.GetEnvironmentVariable("AI_FOUNDRY_ENDPOINT")!);
+var endpoint = new Uri(Environment.GetEnvironmentVariable("AI_FOUNDRY_INFERENCE_ENDPOINT")!);
 var modelDeploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
+var apiVersion = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_VERSION")!;
 
-// Create credential that requests tokens with the cognitive services scope
+// Create ChatCompletionsClient directly with DefaultAzureCredential and custom token scope
 var credential = new DefaultAzureCredential();
-
-// Create a custom token credential that uses the specific scope
 var tokenCredential = new TokenCredentialWrapper(credential);
+ChatCompletionsClient chatClient = new ChatCompletionsClient(endpoint, tokenCredential);
 
-// Create AI Project client and get ChatCompletionsClient
-AIProjectClient client = new AIProjectClient(projectEndpoint, tokenCredential);
-ChatCompletionsClient chatClient = client.GetChatCompletionsClient();
+//var modelInfo = await chatClient.GetModelInfoAsync();
 
-Console.WriteLine("🤖 AI Foundry SDK Chat");
+Console.WriteLine($"🤖 AI Foundry SDK Chat");
+//Console.WriteLine($"Model Name: {modelInfo.Value.ModelName}");
+//Console.WriteLine($"Model Info: {modelInfo.Value.ToString()}");
 Console.WriteLine("Type 'quit' to exit\n");
 
 // Initialize chat history with system message
 var messages = new List<ChatRequestMessage>
 {
     new ChatRequestSystemMessage("You are a helpful AI assistant.")
-};
-
-// Create completion options once
-var requestOptions = new ChatCompletionsOptions()
-{
-    Model = modelDeploymentName,
-    Temperature = 0.7f,
-    MaxTokens = 500
 };
 
 // Chat loop
@@ -62,8 +61,19 @@ while (true)
     // Add user message to chat history
     messages.Add(new ChatRequestUserMessage(userInput));
 
-    // Set messages on request options
-    requestOptions.Messages = messages;
+    // Create completion options with current messages
+    var requestOptions = new ChatCompletionsOptions()
+    {
+        Model = modelDeploymentName,
+        Temperature = 0.7f,
+        MaxTokens = 500
+    };
+
+    // Add all messages to the options
+    foreach (var message in messages)
+    {
+        requestOptions.Messages.Add(message);
+    }
 
     // Get AI response
     var response = chatClient.Complete(requestOptions);

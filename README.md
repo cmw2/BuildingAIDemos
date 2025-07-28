@@ -46,10 +46,16 @@ IntroDemos/
 │   ├── 11-tool-calling-semantic-kernel/
 │   │   ├── 11-tool-calling-semantic-kernel.csproj
 │   │   └── Program.cs
-│   └── 12-prompt-templating-semantic-kernel/
-│       ├── 12-prompt-templating-semantic-kernel.csproj
+│   ├── 12-prompt-templating-semantic-kernel/
+│   │   ├── 12-prompt-templating-semantic-kernel.csproj
+│   │   ├── Program.cs
+│   │   └── system-prompt.txt
+│   └── 13-ai-foundry-evaluations/
+│       ├── 13-ai-foundry-evaluations.csproj
 │       ├── Program.cs
-│       └── system-prompt.txt
+│       ├── README.md
+│       ├── test-dataset.json
+│       └── evaluation-prompts.txt
 ```
 
 ## Environment Setup
@@ -97,6 +103,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 10. Tool Calling Manual | Manual function calling with Azure OpenAI SDK | ✅ Complete | Date/time and weather functions |
 | 11. Tool Calling Semantic Kernel | Auto function calling with Semantic Kernel | ✅ Complete | Same functions, automatic execution |
 | 12. Prompt Templating Semantic Kernel | Prompt templates and observability with Semantic Kernel | ✅ Complete | System prompts and telemetry tracking |
+| 13. AI Foundry Evaluations | Response quality evaluation with AI Foundry | ✅ Complete | Built-in evaluators and prompt comparison |
 
 ### Status Legend
 - ⏳ Pending - Not started
@@ -247,6 +254,18 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Semantic Kernel prompt template functionality
   - Clean separation of prompts from code
   - Demonstrates monitoring and logging capabilities for AI applications
+
+### 13. AI Foundry Evaluations
+- **Files**: `samples/13-ai-foundry-evaluations/`
+- **Purpose**: Demonstrate response quality evaluation using AI Foundry's evaluation capabilities
+- **Usage**: `cd samples/13-ai-foundry-evaluations && dotnet run`
+- **Features**:
+  - Built-in evaluation metrics (Groundedness, Relevance, Coherence, Fluency)
+  - Batch processing of test cases from JSON dataset
+  - Prompt variation testing and comparison
+  - Automated scoring and summary statistics
+  - Quality measurement for AI application improvement
+  - Demonstrates evaluation-driven development practices
 
 ## Getting Started
 

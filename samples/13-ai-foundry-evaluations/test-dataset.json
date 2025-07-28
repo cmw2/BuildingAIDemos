@@ -1,0 +1,40 @@
+{
+  "testCases": [
+    {
+      "id": 1,
+      "question": "What is the capital of France?",
+      "expectedResponse": "The capital of France is Paris.",
+      "category": "factual"
+    },
+    {
+      "id": 2,
+      "question": "Explain photosynthesis in simple terms.",
+      "expectedResponse": "Photosynthesis is the process where plants use sunlight, water, and carbon dioxide to create food (glucose) and release oxygen as a byproduct.",
+      "category": "explanatory"
+    },
+    {
+      "id": 3,
+      "question": "How do you debug a null reference exception in C#?",
+      "expectedResponse": "To debug a null reference exception: 1) Check the stack trace to find where it occurred, 2) Examine variables that might be null, 3) Add null checks or initialize objects properly, 4) Use debugging tools to step through the code.",
+      "category": "technical"
+    },
+    {
+      "id": 4,
+      "question": "Write a short poem about coding.",
+      "expectedResponse": "A creative poem that captures the essence of programming, mentioning elements like code, debugging, logic, or the programmer's experience.",
+      "category": "creative"
+    },
+    {
+      "id": 5,
+      "question": "Compare Python and C# for web development.",
+      "expectedResponse": "Python offers frameworks like Django and Flask with rapid development, while C# provides ASP.NET with strong typing and enterprise features. Both are viable choices depending on team expertise and project requirements.",
+      "category": "comparative"
+    },
+    {
+      "id": 6,
+      "question": "What year did World War II end?",
+      "expectedResponse": "World War II ended in 1945.",
+      "category": "factual"
+    }
+  ]
+}
