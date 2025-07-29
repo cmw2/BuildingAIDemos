@@ -81,6 +81,19 @@
             "group": "build"
         },
         {
+            "label": "build-sample-15",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/samples/15-openai-your-data/15-openai-your-data.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
+        },
+        {
             "label": "watch-sample-09",
             "command": "dotnet",
             "type": "process",

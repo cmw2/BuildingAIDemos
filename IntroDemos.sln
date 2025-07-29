@@ -50,6 +50,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "12-prompt-templating-semant
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "13-ai-foundry-evaluations", "samples\13-ai-foundry-evaluations\13-ai-foundry-evaluations.csproj", "{4FD99739-E841-41D8-C3E2-85B3E022BB7C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "15-openai-your-data", "samples\15-openai-your-data\15-openai-your-data.csproj", "{5AE0A84A-F952-42C9-D4F3-96C4F133CC8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{4FD99739-E841-41D8-C3E2-85B3E022BB7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FD99739-E841-41D8-C3E2-85B3E022BB7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FD99739-E841-41D8-C3E2-85B3E022BB7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AE0A84A-F952-42C9-D4F3-96C4F133CC8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AE0A84A-F952-42C9-D4F3-96C4F133CC8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AE0A84A-F952-42C9-D4F3-96C4F133CC8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AE0A84A-F952-42C9-D4F3-96C4F133CC8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

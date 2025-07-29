@@ -56,6 +56,15 @@ IntroDemos/
 │       ├── README.md
 │       ├── test-dataset.json
 │       └── evaluation-prompts.txt
+│   ├── 14-intent-resolution-notebook/
+│   │   ├── cloud-evaluations.ipynb
+│   │   ├── health_fitness_eval_data.jsonl
+│   │   ├── intent-resolution-evaluation.ipynb
+│   │   └── README.md
+│   └── 15-openai-your-data/
+│       ├── 15-openai-your-data.csproj
+│       ├── Program.cs
+│       └── README.md
 ```
 
 ## Environment Setup
@@ -82,6 +91,11 @@ AI_FOUNDRY_PROJECT_CONNECTION_STRING=your_foundry_endpoint_here
 AI_FOUNDRY_API_KEY=your_foundry_api_key_here
 AI_FOUNDRY_PROJECT_NAME=your_project_name_here
 
+# Azure AI Search Configuration (for sample 15 - Use Your Own Data)
+AZURE_SEARCH_ENDPOINT=your_search_service_endpoint_here
+AZURE_SEARCH_API_KEY=your_search_api_key_here
+AZURE_SEARCH_INDEX_NAME=your_search_index_name_here
+
 # Model Deployment Names
 OPENAI_MODEL_DEPLOYMENT=gpt-4o
 PHI_MODEL_DEPLOYMENT=phi-4
@@ -103,7 +117,9 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 10. Tool Calling Manual | Manual function calling with Azure OpenAI SDK | ✅ Complete | Date/time and weather functions |
 | 11. Tool Calling Semantic Kernel | Auto function calling with Semantic Kernel | ✅ Complete | Same functions, automatic execution |
 | 12. Prompt Templating Semantic Kernel | Prompt templates and observability with Semantic Kernel | ✅ Complete | System prompts and telemetry tracking |
-| 13. AI Foundry Evaluations | Response quality evaluation with AI Foundry | ✅ Complete | Built-in evaluators and prompt comparison |
+| 13. AI Foundry Evaluations | Response quality evaluation with AI Foundry | ❌ Blocked | Known issues with current implementation |
+| 14. Intent Resolution Notebook | Intent resolution evaluation with notebooks | ❌ Blocked | Known issues with current implementation |
+| 15. OpenAI Use Your Own Data | RAG with Azure AI Search integration | ✅ Complete | Demonstrates Use Your Own Data feature |
 
 ### Status Legend
 - ⏳ Pending - Not started
@@ -259,6 +275,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 - **Files**: `samples/13-ai-foundry-evaluations/`
 - **Purpose**: Demonstrate response quality evaluation using AI Foundry's evaluation capabilities
 - **Usage**: `cd samples/13-ai-foundry-evaluations && dotnet run`
+- **Status**: ❌ Known issues with current implementation
 - **Features**:
   - Built-in evaluation metrics (Groundedness, Relevance, Coherence, Fluency)
   - Batch processing of test cases from JSON dataset
@@ -266,6 +283,30 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Automated scoring and summary statistics
   - Quality measurement for AI application improvement
   - Demonstrates evaluation-driven development practices
+
+### 14. Intent Resolution Evaluation (Notebook)
+- **Files**: `samples/14-intent-resolution-notebook/`
+- **Purpose**: Demonstrate intent resolution evaluation using notebook environments
+- **Usage**: Open notebooks in Jupyter or VS Code
+- **Status**: ❌ Known issues with current implementation
+- **Features**:
+  - Intent classification evaluation
+  - Health and fitness domain examples
+  - Cloud-based evaluation workflows
+
+### 15. OpenAI Use Your Own Data (RAG)
+- **Files**: `samples/15-openai-your-data/`
+- **Purpose**: Demonstrate Azure OpenAI's "Use Your Own Data" feature with Azure AI Search
+- **Usage**: `cd samples/15-openai-your-data && dotnet run`
+- **Features**:
+  - Azure OpenAI integration with Azure AI Search data sources
+  - RAG (Retrieval-Augmented Generation) pattern implementation
+  - Built-in "Use Your Own Data" feature using AzureSearchChatDataSource
+  - Configurable search parameters (TopNDocuments, Strictness, QueryType)
+  - Field mapping configuration for custom index schemas
+  - Interactive chat interface that searches your indexed documents
+  - Comprehensive error handling and troubleshooting guidance
+  - Environment-based configuration for search endpoint, API keys, and index names
 
 ## Getting Started
 

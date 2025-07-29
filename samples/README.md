@@ -1,6 +1,6 @@
 # AI Foundry Model Calling Samples
 
-A collection of 8 clean, minimal samples demonstrating different approaches to calling AI models in Azure AI Foundry.
+A collection of samples demonstrating different approaches to calling AI models in Azure AI Foundry.
 
 ## 🎯 Sample Overview
 
@@ -46,6 +46,14 @@ A collection of 8 clean, minimal samples demonstrating different approaches to c
 **Approach:** Compare multiple models with the same prompt using AI Foundry SDK  
 **Good for:** Model evaluation and comparison
 
+### Sample 09-14: Advanced Scenarios
+Various samples covering multimodal capabilities, tool calling, prompt templating, evaluations, and intent resolution.
+
+### Sample 15: Azure OpenAI - Use Your Own Data
+**Language:** C# (.NET)  
+**Approach:** Azure OpenAI SDK with Azure AI Search integration  
+**Good for:** RAG (Retrieval-Augmented Generation) scenarios where you want to chat with your own documents
+
 ## 🚀 Quick Start
 
 1. **Configure Environment**: Copy `.env.example` to `.env` and add your AI Foundry details
@@ -82,7 +90,14 @@ samples/
 ├── 07-foundry-sdk-dotnet/      # Native AI Foundry SDK
 │   ├── nonstreaming/
 │   └── streaming/
-└── 08-multimodel-comparison/   # Multi-model testing
+├── 08-multimodel-comparison/   # Multi-model testing
+├── 09-multimodal-storage/      # Multimodal scenarios
+├── 10-tool-calling-manual/     # Manual tool calling
+├── 11-tool-calling-semantic-kernel/ # SK tool calling
+├── 12-prompt-templating-semantic-kernel/ # Prompt templating
+├── 13-ai-foundry-evaluations/ # Model evaluations
+├── 14-intent-resolution-notebook/ # Intent resolution
+└── 15-openai-your-data/        # Use Your Own Data (RAG)
 ```
 
 ## 🎨 Design Philosophy
@@ -99,5 +114,6 @@ samples/
 - **Enterprise .NET**: Use Sample 06 (Semantic Kernel) or 07 (AI Foundry SDK)
 - **Model Comparison**: Use Sample 08 (Multi-Model)
 - **Framework Integration**: Sample 05 (LangChain) for Python, Sample 06 (Semantic Kernel) for .NET
+- **RAG with Your Documents**: Use Sample 15 (Use Your Own Data) for Azure AI Search integration
 
 Each sample is self-contained and demonstrates a complete working approach to AI model integration.

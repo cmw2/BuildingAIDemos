@@ -50,6 +50,18 @@
             "preLaunchTask": "build-sample-09"
         },
         {
+            "name": "Launch Sample 15 - OpenAI Use Your Own Data",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/samples/15-openai-your-data/bin/Debug/net8.0/15-openai-your-data.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/samples/15-openai-your-data",
+            "console": "integratedTerminal",
+            "stopAtEntry": false,
+            "requireExactSource": false,
+            "preLaunchTask": "build-sample-15"
+        },
+        {
             "name": "Launch Sample 07 - AI Foundry SDK",
             "type": "coreclr",
             "request": "launch",
