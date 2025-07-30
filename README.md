@@ -76,6 +76,9 @@ IntroDemos/
 │   └── 18-ai-agents-evaluation/
 │       ├── ai-agents-evaluation.ipynb
 │       └── README.md
+│   └── 19-mcp-weather-server/
+│       ├── server.py             # Python version alternative
+│       └── README.md
 ```
 
 ## Environment Setup
@@ -134,6 +137,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 16. Azure AI Agent Service | AI agent with automatic tool calling using Azure AI Agent Service | ✅ Complete | Weather forecasting and date functions |
 | 17. Semantic Kernel Agents | AI agent with automatic tool calling using Semantic Kernel Agents | ✅ Complete | Same functionality as Sample 16 for comparison |
 | 18. AI Agents Evaluation | AI agents evaluation using Python notebook | ❌ Blocked | Performance and quality assessment framework |
+| 19. MCP Weather Server | Model Context Protocol server for weather forecasts | 🔄 In Progress | Custom MCP server implementation |
 
 ### Status Legend
 - ⏳ Pending - Not started
@@ -360,6 +364,20 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Visualization of evaluation results with charts and graphs
   - Statistical analysis of agent behavior patterns
   - Framework for systematic agent testing and improvement
+
+### 19. MCP Weather Server
+- **Files**: `samples/19-mcp-weather-server/`
+- **Purpose**: Demonstrate creating a custom Model Context Protocol (MCP) server for weather forecasts
+- **Usage**: `cd samples/19-mcp-weather-server && python server.py`
+- **Status**: ⏳ Planned for implementation
+- **Features**:
+  - Custom MCP server implementation using Python
+  - Weather forecast tool endpoints matching the fake data from samples 10, 11, 16, 17
+  - Proper MCP protocol implementation with tool discovery and invocation
+  - JSON-RPC 2.0 communication protocol
+  - Demonstrates how to create reusable tools for AI agents
+  - Can be consumed by any MCP-compatible AI client (Claude, VS Code Copilot, etc.)
+  - Shows separation of concerns between tool logic and AI agent implementation
 
 ## Getting Started
 
