@@ -104,6 +104,19 @@
                 "${workspaceFolder}/samples/09-multimodal-storage/09-multimodal-storage.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-sample-16",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/samples/16-ai-agent-service/16-ai-agent-service.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
         }
     ]
 }

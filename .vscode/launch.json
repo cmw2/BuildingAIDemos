@@ -74,6 +74,18 @@
             "preLaunchTask": "build-sample-07"
         },
         {
+            "name": "Launch Sample 16 - AI Agent Service",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/samples/16-ai-agent-service/bin/Debug/net8.0/16-ai-agent-service.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/samples/16-ai-agent-service",
+            "console": "integratedTerminal",
+            "stopAtEntry": false,
+            "requireExactSource": false,
+            "preLaunchTask": "build-sample-16"
+        },
+        {
             "name": "Attach to Process",
             "type": "coreclr",
             "request": "attach"
