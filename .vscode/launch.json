@@ -86,6 +86,18 @@
             "preLaunchTask": "build-sample-16"
         },
         {
+            "name": "Launch Sample 17 - Semantic Kernel Agents",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/samples/17-semantic-kernel-agents/bin/Debug/net8.0/17-semantic-kernel-agents.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/samples/17-semantic-kernel-agents",
+            "console": "integratedTerminal",
+            "stopAtEntry": false,
+            "requireExactSource": false,
+            "preLaunchTask": "build-sample-17"
+        },
+        {
             "name": "Attach to Process",
             "type": "coreclr",
             "request": "attach"

@@ -61,8 +61,16 @@ IntroDemos/
 │   │   ├── health_fitness_eval_data.jsonl
 │   │   ├── intent-resolution-evaluation.ipynb
 │   │   └── README.md
-│   └── 15-openai-your-data/
-│       ├── 15-openai-your-data.csproj
+│   ├── 15-openai-your-data/
+│   │   ├── 15-openai-your-data.csproj
+│   │   ├── Program.cs
+│   │   └── README.md
+│   ├── 16-ai-agent-service/
+│   │   ├── 16-ai-agent-service.csproj
+│   │   ├── Program.cs
+│   │   └── README.md
+│   └── 17-semantic-kernel-agents/
+│       ├── 17-semantic-kernel-agents.csproj
 │       ├── Program.cs
 │       └── README.md
 ```
@@ -120,6 +128,8 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 13. AI Foundry Evaluations | Response quality evaluation with AI Foundry | ❌ Blocked | Known issues with current implementation |
 | 14. Intent Resolution Notebook | Intent resolution evaluation with notebooks | ❌ Blocked | Known issues with current implementation |
 | 15. OpenAI Use Your Own Data | RAG with Azure AI Search integration | ✅ Complete | Demonstrates Use Your Own Data feature |
+| 16. Azure AI Agent Service | AI agent with automatic tool calling using Azure AI Agent Service | ✅ Complete | Weather forecasting and date functions |
+| 17. Semantic Kernel Agents | AI agent with automatic tool calling using Semantic Kernel Agents | ✅ Complete | Same functionality as Sample 16 for comparison |
 
 ### Status Legend
 - ⏳ Pending - Not started
@@ -307,6 +317,32 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Interactive chat interface that searches your indexed documents
   - Comprehensive error handling and troubleshooting guidance
   - Environment-based configuration for search endpoint, API keys, and index names
+
+### 16. Azure AI Agent Service
+- **Files**: `samples/16-ai-agent-service/`
+- **Purpose**: Demonstrate AI agent with automatic tool calling using Azure AI Agent Service
+- **Usage**: `cd samples/16-ai-agent-service && dotnet run`
+- **Features**:
+  - Azure AI Agent Service with persistent agent sessions
+  - Automatic tool calling with weather forecasting capabilities
+  - Date and time functions (local and UTC)
+  - DefaultAzureCredential authentication with AI Foundry
+  - Streaming responses with real-time tool call logging
+  - Clean session management and proper resource cleanup
+  - Educational code focused on agent fundamentals
+
+### 17. Semantic Kernel Agents
+- **Files**: `samples/17-semantic-kernel-agents/`
+- **Purpose**: Demonstrate AI agent with automatic tool calling using Semantic Kernel Agents
+- **Usage**: `cd samples/17-semantic-kernel-agents && dotnet run`
+- **Features**:
+  - Semantic Kernel AzureAIAgent integration with Azure AI Foundry
+  - Identical functionality to Sample 16 for direct framework comparison
+  - Automatic tool calling with the same weather and date/time functions
+  - KernelFunction attribute-based tool definitions
+  - Streaming responses with comprehensive tool call visibility
+  - Proper thread management and agent lifecycle handling
+  - Demonstrates Semantic Kernel's agent architecture patterns
 
 ## Getting Started
 

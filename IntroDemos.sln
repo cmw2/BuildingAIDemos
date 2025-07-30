@@ -52,6 +52,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "13-ai-foundry-evaluations",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "15-openai-your-data", "samples\15-openai-your-data\15-openai-your-data.csproj", "{5AE0A84A-F952-42C9-D4F3-96C4F133CC8D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "16-ai-agent-service", "samples\16-ai-agent-service\16-ai-agent-service.csproj", "{6BF1B95B-G063-43DA-E5G4-A7D5G244DD9E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "17-semantic-kernel-agents", "samples\17-semantic-kernel-agents\17-semantic-kernel-agents.csproj", "{7CG2CA6C-H174-54EB-F6H5-B8E6H355EE0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +114,14 @@ Global
 		{5AE0A84A-F952-42C9-D4F3-96C4F133CC8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AE0A84A-F952-42C9-D4F3-96C4F133CC8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AE0A84A-F952-42C9-D4F3-96C4F133CC8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BF1B95B-G063-43DA-E5G4-A7D5G244DD9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BF1B95B-G063-43DA-E5G4-A7D5G244DD9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BF1B95B-G063-43DA-E5G4-A7D5G244DD9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BF1B95B-G063-43DA-E5G4-A7D5G244DD9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CG2CA6C-H174-54EB-F6H5-B8E6H355EE0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CG2CA6C-H174-54EB-F6H5-B8E6H355EE0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CG2CA6C-H174-54EB-F6H5-B8E6H355EE0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CG2CA6C-H174-54EB-F6H5-B8E6H355EE0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
