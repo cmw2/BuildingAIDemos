@@ -69,9 +69,12 @@ IntroDemos/
 │   │   ├── 16-ai-agent-service.csproj
 │   │   ├── Program.cs
 │   │   └── README.md
-│   └── 17-semantic-kernel-agents/
-│       ├── 17-semantic-kernel-agents.csproj
-│       ├── Program.cs
+│   ├── 17-semantic-kernel-agents/
+│   │   ├── 17-semantic-kernel-agents.csproj
+│   │   ├── Program.cs
+│   │   └── README.md
+│   └── 18-ai-agents-evaluation/
+│       ├── ai-agents-evaluation.ipynb
 │       └── README.md
 ```
 
@@ -130,6 +133,7 @@ PHI_MODEL_DEPLOYMENT=phi-4
 | 15. OpenAI Use Your Own Data | RAG with Azure AI Search integration | ✅ Complete | Demonstrates Use Your Own Data feature |
 | 16. Azure AI Agent Service | AI agent with automatic tool calling using Azure AI Agent Service | ✅ Complete | Weather forecasting and date functions |
 | 17. Semantic Kernel Agents | AI agent with automatic tool calling using Semantic Kernel Agents | ✅ Complete | Same functionality as Sample 16 for comparison |
+| 18. AI Agents Evaluation | AI agents evaluation using Python notebook | ❌ Blocked | Performance and quality assessment framework |
 
 ### Status Legend
 - ⏳ Pending - Not started
@@ -343,6 +347,19 @@ PHI_MODEL_DEPLOYMENT=phi-4
   - Streaming responses with comprehensive tool call visibility
   - Proper thread management and agent lifecycle handling
   - Demonstrates Semantic Kernel's agent architecture patterns
+
+### 18. AI Agents Evaluation (Notebook)
+- **Files**: `samples/18-ai-agents-evaluation/`
+- **Purpose**: Demonstrate evaluation techniques for AI agents using Python and Jupyter notebooks
+- **Usage**: Open `ai-agents-evaluation.ipynb` in VS Code or Jupyter environment
+- **Features**:
+  - AI agent performance measurement and benchmarking
+  - Tool calling accuracy and effectiveness assessment
+  - Response quality evaluation with multiple metrics
+  - Comparative analysis between Azure AI Agent Service and Semantic Kernel Agents
+  - Visualization of evaluation results with charts and graphs
+  - Statistical analysis of agent behavior patterns
+  - Framework for systematic agent testing and improvement
 
 ## Getting Started
 
