@@ -21,6 +21,8 @@ var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT
 var searchEndpoint = Environment.GetEnvironmentVariable("AZURE_SEARCH_ENDPOINT");
 var searchApiKey = Environment.GetEnvironmentVariable("AZURE_SEARCH_API_KEY");
 var searchIndexName = Environment.GetEnvironmentVariable("AZURE_SEARCH_INDEX_NAME");
+var embeddingDeploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME");
+var semanticConfiguration = Environment.GetEnvironmentVariable("AZURE_SEARCH_SEMANTIC_CONFIG_NAME") ?? "azureml-default"; // Default semantic configuration
 
 // Validate required environment variables
 if (string.IsNullOrEmpty(searchEndpoint) || string.IsNullOrEmpty(searchApiKey) || string.IsNullOrEmpty(searchIndexName))
@@ -73,7 +75,7 @@ try
         Authentication = DataSourceAuthentication.FromApiKey(searchApiKey),
         
         // Configure search parameters
-        QueryType = DataSourceQueryType.Simple, // Use simple search (semantic search requires specific setup)
+        QueryType = DataSourceQueryType.VectorSemanticHybrid,
         FieldMappings = new DataSourceFieldMappings()
         {
             ContentFieldNames = { "content" }, // Adjust field names based on your index schema
@@ -82,7 +84,8 @@ try
             VectorFieldNames = {"contentVector"},
             UrlFieldName = "url"
         },
-        
+        VectorizationSource = DataSourceVectorizer.FromDeploymentName(embeddingDeploymentName),
+        SemanticConfiguration = semanticConfiguration,
         // Configure result filtering and ranking
         TopNDocuments = 5,              // Number of documents to retrieve from search
         InScope = true,                 // Restrict responses to only the search results

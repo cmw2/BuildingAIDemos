@@ -16,7 +16,7 @@ using DotNetEnv;
 // - Send function results back to the model
 
 // Load environment variables
-Env.Load(".env");
+Env.Load("../../.env");
 
 var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
 var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
