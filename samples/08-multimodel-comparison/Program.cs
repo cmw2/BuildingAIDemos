@@ -15,24 +15,14 @@ using DotNetEnv;
 Env.Load("../../.env");
 
 // Get configuration from environment
-var foundryEndpoint = Environment.GetEnvironmentVariable("AI_FOUNDRY_PROJECT_CONNECTION_STRING")!;
+var endpoint = new Uri(Environment.GetEnvironmentVariable("AI_FOUNDRY_INFERENCE_ENDPOINT")!);
 
-// Create project endpoint from foundry endpoint
-var projectEndpoint = foundryEndpoint.Replace("https://ai.azure.com", "https://").Replace("/", "") + ".inference.ai.azure.com";
-
-// Set up authentication with DefaultAzureCredential and token policy
+// Set up authentication with DefaultAzureCredential and custom token scope
 var credential = new DefaultAzureCredential();
-var tokenRequestContext = new TokenRequestContext(new[] { "https://ai.azure.com/.default" });
-var tokenPolicy = new BearerTokenAuthenticationPolicy(credential, tokenRequestContext);
+var tokenCredential = new TokenCredentialWrapper(credential);
 
-// Create ChatCompletionsClient with project endpoint and authentication
-var chatClient = new ChatCompletionsClient(
-    new Uri($"https://{projectEndpoint}"),
-    credential,
-    new ChatCompletionsClientOptions
-    {
-        NetworkTimeout = TimeSpan.FromMinutes(5)
-    });
+// Create ChatCompletionsClient with inference endpoint and authentication
+var chatClient = new ChatCompletionsClient(endpoint, tokenCredential);
 
 Console.WriteLine("🔄 Multi-Model AI Foundry Comparison");
 Console.WriteLine("Compare how different models respond to the same prompt\n");
@@ -40,9 +30,9 @@ Console.WriteLine("Compare how different models respond to the same prompt\n");
 // Define models to compare (you can modify these based on your deployments)
 var models = new[]
 {
-    "gpt-4o", // Primary model
-    "gpt-4o-mini", // Faster/cheaper model
-    "gpt-35-turbo" // Alternative model
+    "gpt-5.1", // Primary model
+    "gpt-5-mini", // Faster/cheaper model
+    "gpt-5.2-chat" // Alternative model
 };
 
 // Get user prompt
@@ -68,9 +58,7 @@ foreach (var model in models)
         // Create completion options for this model
         var requestOptions = new ChatCompletionsOptions()
         {
-            Model = model,
-            Temperature = 0.7f,
-            MaxTokens = 300
+            Model = model
         };
 
         // Add system and user messages
@@ -92,3 +80,26 @@ foreach (var model in models)
 }
 
 Console.WriteLine("✅ Comparison complete!");
+
+// Custom wrapper to handle token scope
+public class TokenCredentialWrapper : TokenCredential
+{
+    private readonly TokenCredential _innerCredential;
+
+    public TokenCredentialWrapper(TokenCredential innerCredential)
+    {
+        _innerCredential = innerCredential;
+    }
+
+    public override AccessToken GetToken(TokenRequestContext requestContext, CancellationToken cancellationToken)
+    {
+        var context = new TokenRequestContext(new[] { "https://ai.azure.com/.default" });
+        return _innerCredential.GetToken(context, cancellationToken);
+    }
+
+    public override ValueTask<AccessToken> GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+    {
+        var context = new TokenRequestContext(new[] { "https://ai.azure.com/.default" });
+        return _innerCredential.GetTokenAsync(context, cancellationToken);
+    }
+}

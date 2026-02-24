@@ -1,0 +1,329 @@
+using Azure;
+using Azure.AI.Projects;
+using Azure.AI.Inference;
+using Azure.Identity;
+using Azure.Core;
+using Azure.Core.Pipeline;
+using System.ClientModel.Primitives;
+using DotNetEnv;
+using System.Text.Json;
+
+// Sample 13: AI Foundry Evaluations
+//
+// Demonstrates cloud-based evaluation of AI model responses using AI Foundry's
+// built-in evaluators. The flow:
+//   1. Generate AI responses for test questions
+//   2. Upload evaluation data as a dataset to AI Foundry
+//   3. Run cloud evaluation with built-in quality evaluators
+//   4. Poll for results and display scores
+
+// Load environment variables
+Env.Load("../../.env");
+
+var projectEndpoint = Environment.GetEnvironmentVariable("AI_FOUNDRY_PROJECT_CONNECTION_STRING")!;
+var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
+var deploymentEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_ENDPOINT")!;
+
+var credential = new DefaultAzureCredential();
+
+Console.WriteLine("🧪 AI Foundry Evaluations Demo");
+Console.WriteLine(new string('=', 50));
+
+try
+{
+    // ─── Step 1: Connect to AI Foundry project ───────────────────────
+    var tokenCredential = new TokenCredentialWrapper(credential);
+    var projectClient = new AIProjectClient(new Uri(projectEndpoint), tokenCredential);
+    Console.WriteLine("✅ Connected to AI Foundry project");
+
+    // ─── Step 2: Generate AI responses for test cases ────────────────
+    Console.WriteLine("\n📝 Generating AI responses for test cases...");
+
+    var openAiTokenCredential = new OpenAITokenCredentialWrapper(credential);
+    var chatClient = new ChatCompletionsClient(new Uri(deploymentEndpoint), openAiTokenCredential);
+
+    // Load test cases
+    var testDataPath = Path.Combine(AppContext.BaseDirectory, "test-dataset.json");
+    if (!File.Exists(testDataPath))
+        testDataPath = "test-dataset.json";
+    var testData = JsonSerializer.Deserialize<JsonElement>(File.ReadAllText(testDataPath));
+    var testCases = testData.GetProperty("testCases").EnumerateArray().ToList();
+
+    // Generate responses and build evaluation JSONL
+    var evalRows = new List<Dictionary<string, string>>();
+    foreach (var testCase in testCases)
+    {
+        var question = testCase.GetProperty("question").GetString()!;
+        var expectedResponse = testCase.GetProperty("expectedResponse").GetString()!;
+
+        Console.WriteLine($"   Q: {question}");
+
+        var requestOptions = new ChatCompletionsOptions()
+        {
+            Model = deploymentName,
+            Temperature = 0.3f,
+            MaxTokens = 300
+        };
+        requestOptions.Messages.Add(new ChatRequestSystemMessage(
+            "You are a helpful assistant. Provide concise, accurate responses."));
+        requestOptions.Messages.Add(new ChatRequestUserMessage(question));
+
+        var response = await chatClient.CompleteAsync(requestOptions);
+        var aiResponse = response.Value.Content;
+        Console.WriteLine($"   A: {aiResponse}\n");
+
+        evalRows.Add(new Dictionary<string, string>
+        {
+            ["query"] = question,
+            ["response"] = aiResponse,
+            ["context"] = expectedResponse,  // Use expected response as context for groundedness
+            ["ground_truth"] = expectedResponse
+        });
+    }
+
+    // Write JSONL file for upload
+    var jsonlPath = Path.Combine(Path.GetTempPath(), $"eval-data-{DateTime.Now:yyyyMMdd-HHmmss}.jsonl");
+    await using (var writer = new StreamWriter(jsonlPath))
+    {
+        foreach (var row in evalRows)
+        {
+            await writer.WriteLineAsync(JsonSerializer.Serialize(row));
+        }
+    }
+    Console.WriteLine($"✅ Generated evaluation data: {evalRows.Count} rows");
+
+    // ─── Step 3: Upload dataset to AI Foundry ────────────────────────
+    Console.WriteLine("\n📤 Uploading evaluation dataset...");
+    var datasetVersion = DateTime.Now.ToString("yyyyMMddHHmmss");
+    var uploadResult = await projectClient.Datasets.UploadFileAsync(
+        name: "eval-sample-13",
+        version: datasetVersion,
+        filePath: jsonlPath);
+    var datasetId = uploadResult.Id;
+    Console.WriteLine($"✅ Uploaded dataset. ID: {datasetId}");
+
+    // ─── Step 4: Configure evaluator init params ─────────────────────
+    // AI-assisted evaluators need the deployment name for the judge model.
+    // The evaluation service resolves the endpoint from the project context.
+    // Extract the account-level endpoint from the project connection string for
+    // the model-endpoint header required by the evaluation service.
+    var projectUri = new Uri(projectEndpoint);
+    var modelEndpoint = $"{projectUri.Scheme}://{projectUri.Host}";
+    Console.WriteLine("\n🔗 Configuring evaluators...");
+    Console.WriteLine($"   Model endpoint: {modelEndpoint}");
+    Console.WriteLine($"   Deployment: {deploymentName}");
+
+    var initParams = new Dictionary<string, BinaryData>
+    {
+        ["deployment_name"] = BinaryData.FromObjectAsJson(deploymentName)
+    };
+
+    // ─── Step 5: Create cloud evaluation ─────────────────────────────
+    Console.WriteLine("\n🚀 Creating cloud evaluation...");
+
+    // F1 Score evaluator doesn't need a model (non-AI-assisted) - good for testing
+    var f1Config = new EvaluatorConfiguration(EvaluatorIDs.F1Score);
+    f1Config.DataMapping["response"] = "${data.response}";
+    f1Config.DataMapping["ground_truth"] = "${data.ground_truth}";
+
+    var evaluation = new Evaluation(
+        data: new InputDataset(datasetId),
+        evaluators: new Dictionary<string, EvaluatorConfiguration>
+        {
+            ["f1_score"] = f1Config
+            // AI-assisted evaluators temporarily disabled for testing
+            // ["groundedness"] = CreateEvaluatorConfig(EvaluatorIDs.Groundedness, initParams,
+            //     new() { ["query"] = "${data.query}", ["response"] = "${data.response}", ["context"] = "${data.context}" }),
+            // ["relevance"] = CreateEvaluatorConfig(EvaluatorIDs.Relevance, initParams,
+            //     new() { ["query"] = "${data.query}", ["response"] = "${data.response}" }),
+            // ["coherence"] = CreateEvaluatorConfig(EvaluatorIDs.Coherence, initParams,
+            //     new() { ["query"] = "${data.query}", ["response"] = "${data.response}" }),
+            // ["fluency"] = CreateEvaluatorConfig(EvaluatorIDs.Fluency, initParams,
+            //     new() { ["query"] = "${data.query}", ["response"] = "${data.response}" })
+        })
+    {
+        DisplayName = $"Sample 13 Eval - {DateTime.Now:yyyy-MM-dd HH:mm}",
+        Description = "Evaluation of AI responses for test questions using built-in quality evaluators"
+    };
+
+    // Get a bearer token to authenticate the evaluation service's model calls
+    var apiToken = await credential.GetTokenAsync(
+        new TokenRequestContext(new[] { "https://cognitiveservices.azure.com/.default" }));
+
+    // Use protocol method to pass required model-endpoint and api-key headers
+    // The eval service needs these to call the model for AI-assisted evaluators
+    var evalBinary = ModelReaderWriter.Write(evaluation);
+    var requestContent = RequestContent.Create(evalBinary);
+    var requestContext = new RequestContext();
+    requestContext.AddPolicy(
+        new AddHeaderPolicy("model-endpoint", modelEndpoint),
+        HttpPipelinePosition.PerCall);
+    requestContext.AddPolicy(
+        new AddHeaderPolicy("api-key", apiToken.Token),
+        HttpPipelinePosition.PerCall);
+
+    var rawResponse = await projectClient.Evaluations.CreateAsync(requestContent, requestContext);
+    var evalResponse = ModelReaderWriter.Read<Evaluation>(rawResponse.Content);
+    var evalId = evalResponse!.Name;
+    Console.WriteLine($"✅ Evaluation created. ID: {evalId}");
+
+    // ─── Step 6: Poll for completion ─────────────────────────────────
+    Console.WriteLine("\n⏳ Waiting for evaluation to complete...");
+    var maxWait = TimeSpan.FromMinutes(10);
+    var pollInterval = TimeSpan.FromSeconds(15);
+    var elapsed = TimeSpan.Zero;
+
+    while (elapsed < maxWait)
+    {
+        var status = await projectClient.Evaluations.GetEvaluationAsync(evalId);
+        var currentStatus = status.Value.Status;
+        Console.Write($"\r   Status: {currentStatus}... ({elapsed.TotalSeconds:0}s)     ");
+
+        if (currentStatus == "Completed" || currentStatus == "Failed")
+        {
+            Console.WriteLine();
+
+            if (currentStatus == "Failed")
+            {
+                Console.WriteLine("❌ Evaluation failed.");
+
+                // Dump full raw response for debugging
+                var rawStatus = await projectClient.Evaluations.GetEvaluationAsync(evalId);
+                var rawJson = rawStatus.GetRawResponse().Content.ToString();
+                Console.WriteLine("\n📋 Raw evaluation response:");
+                try
+                {
+                    var formattedJson = JsonSerializer.Serialize(
+                        JsonSerializer.Deserialize<JsonElement>(rawJson),
+                        new JsonSerializerOptions { WriteIndented = true });
+                    Console.WriteLine(formattedJson);
+                }
+                catch
+                {
+                    Console.WriteLine(rawJson);
+                }
+                break;
+            }
+
+            Console.WriteLine("✅ Evaluation completed!\n");
+
+            // Display results
+            Console.WriteLine("📊 Evaluation Results");
+            Console.WriteLine(new string('─', 50));
+
+            if (status.Value.Properties != null)
+            {
+                foreach (var prop in status.Value.Properties)
+                {
+                    Console.WriteLine($"   {prop.Key}: {prop.Value}");
+                }
+            }
+
+            // Show link to portal if available
+            if (status.Value.Properties?.TryGetValue("AiStudioEvaluationUri", out var link) == true)
+            {
+                Console.WriteLine($"\n🔗 View detailed results in AI Foundry portal:");
+                Console.WriteLine($"   {link}");
+            }
+
+            break;
+        }
+
+        await Task.Delay(pollInterval);
+        elapsed += pollInterval;
+    }
+
+    if (elapsed >= maxWait)
+    {
+        Console.WriteLine($"\n⚠️  Evaluation still running after {maxWait.TotalMinutes} minutes.");
+        Console.WriteLine($"   Check status in the AI Foundry portal for evaluation: {evalId}");
+    }
+
+    // Clean up temp file
+    File.Delete(jsonlPath);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"\n❌ Error: {ex.Message}");
+    if (ex.InnerException != null)
+        Console.WriteLine($"   Inner: {ex.InnerException.Message}");
+}
+
+Console.WriteLine("\n👋 Evaluation demo completed!");
+
+// Helper to create an EvaluatorConfiguration and populate its read-only dictionaries
+static EvaluatorConfiguration CreateEvaluatorConfig(
+    string evaluatorId,
+    Dictionary<string, BinaryData> initParams,
+    Dictionary<string, string> dataMapping)
+{
+    var config = new EvaluatorConfiguration(evaluatorId);
+    foreach (var kv in initParams)
+        config.InitParams[kv.Key] = kv.Value;
+    foreach (var kv in dataMapping)
+        config.DataMapping[kv.Key] = kv.Value;
+    return config;
+}
+
+// Token wrapper for AI Foundry project operations (uses ai.azure.com scope)
+public class TokenCredentialWrapper : TokenCredential
+{
+    private readonly TokenCredential _innerCredential;
+    public TokenCredentialWrapper(TokenCredential innerCredential) => _innerCredential = innerCredential;
+
+    public override AccessToken GetToken(TokenRequestContext requestContext, CancellationToken cancellationToken)
+    {
+        var context = new TokenRequestContext(new[] { "https://ai.azure.com/.default" });
+        return _innerCredential.GetToken(context, cancellationToken);
+    }
+
+    public override ValueTask<AccessToken> GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+    {
+        var context = new TokenRequestContext(new[] { "https://ai.azure.com/.default" });
+        return _innerCredential.GetTokenAsync(context, cancellationToken);
+    }
+}
+
+// Token wrapper for Azure OpenAI (uses cognitiveservices scope)
+public class OpenAITokenCredentialWrapper : TokenCredential
+{
+    private readonly TokenCredential _innerCredential;
+    public OpenAITokenCredentialWrapper(TokenCredential innerCredential) => _innerCredential = innerCredential;
+
+    public override AccessToken GetToken(TokenRequestContext requestContext, CancellationToken cancellationToken)
+    {
+        var context = new TokenRequestContext(new[] { "https://cognitiveservices.azure.com/.default" });
+        return _innerCredential.GetToken(context, cancellationToken);
+    }
+
+    public override ValueTask<AccessToken> GetTokenAsync(TokenRequestContext requestContext, CancellationToken cancellationToken)
+    {
+        var context = new TokenRequestContext(new[] { "https://cognitiveservices.azure.com/.default" });
+        return _innerCredential.GetTokenAsync(context, cancellationToken);
+    }
+}
+
+// Custom pipeline policy to add headers to requests (used for evaluation API)
+public class AddHeaderPolicy : HttpPipelinePolicy
+{
+    private readonly string _headerName;
+    private readonly string _headerValue;
+
+    public AddHeaderPolicy(string headerName, string headerValue)
+    {
+        _headerName = headerName;
+        _headerValue = headerValue;
+    }
+
+    public override void Process(HttpMessage message, ReadOnlyMemory<HttpPipelinePolicy> pipeline)
+    {
+        message.Request.Headers.Add(_headerName, _headerValue);
+        ProcessNext(message, pipeline);
+    }
+
+    public override ValueTask ProcessAsync(HttpMessage message, ReadOnlyMemory<HttpPipelinePolicy> pipeline)
+    {
+        message.Request.Headers.Add(_headerName, _headerValue);
+        return ProcessNextAsync(message, pipeline);
+    }
+}

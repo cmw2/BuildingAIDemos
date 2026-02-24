@@ -18,7 +18,7 @@ using DotNetEnv;
 // Compare this to Sample 10 which shows the manual implementation approach.
 
 // Load environment variables
-Env.Load(".env");
+Env.Load("../../.env");
 
 var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
 var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;

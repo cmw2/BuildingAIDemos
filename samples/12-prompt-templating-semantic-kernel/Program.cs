@@ -27,7 +27,7 @@ using System.Diagnostics;
 // prompt templating capabilities for more dynamic AI interactions.
 
 // Load environment variables
-Env.Load(".env");
+Env.Load("../../.env");
 
 var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
 var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;

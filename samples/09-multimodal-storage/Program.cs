@@ -17,7 +17,7 @@ using DotNetEnv;
 // and demonstrate how AI Foundry coordinates multi-service workflows.
 
 // Load environment variables
-Env.Load(".env");
+Env.Load("../../.env");
 
 // Get configuration from environment
 var projectEndpoint = Environment.GetEnvironmentVariable("AI_FOUNDRY_PROJECT_CONNECTION_STRING")!;
@@ -113,19 +113,60 @@ try
             
             analysisRequest.Messages.Add(new ChatRequestSystemMessage("You are an expert image analyst. Provide detailed, accurate analysis of images."));
             
-            // Create a user message that includes both text and the image via SAS URL
-            var userMessage = new ChatRequestUserMessage(new ChatMessageContentItem[]
+            // Create a user message that includes both text and the image.
+            // Try SAS URL first; if storage network rules block the AI service, 
+            // fall back to sending the image inline as base64 from the blob.
+            ChatRequestUserMessage userMessage;
+            try
             {
-                new ChatMessageTextContentItem(userQuery),
-                new ChatMessageImageContentItem(imageUrl)
-            });
-            analysisRequest.Messages.Add(userMessage);
-            
-            var analysis = await visionModel.CompleteAsync(analysisRequest);
-            var result = analysis.Value.Content;
-            
-            Console.WriteLine("\n🧠 AI Analysis:");
-            Console.WriteLine(result);
+                userMessage = new ChatRequestUserMessage(new ChatMessageContentItem[]
+                {
+                    new ChatMessageTextContentItem(userQuery),
+                    new ChatMessageImageContentItem(imageUrl)
+                });
+                
+                analysisRequest.Messages.Add(userMessage);
+                var analysis = await visionModel.CompleteAsync(analysisRequest);
+                var result = analysis.Value.Content;
+                
+                Console.WriteLine("\n🧠 AI Analysis:");
+                Console.WriteLine(result);
+            }
+            catch (Exception urlEx) when (urlEx.Message.Contains("403") || urlEx.Message.Contains("can not be accessed"))
+            {
+                Console.WriteLine("⚠️  SAS URL not accessible by AI service (storage network rules). Sending image inline...");
+                
+                // Download blob content and send as base64
+                var downloadResult = await blobClient.DownloadContentAsync();
+                var imageBytes = downloadResult.Value.Content;
+                var mimeType = Path.GetExtension(fileName).ToLower() switch
+                {
+                    ".png" => "image/png",
+                    ".jpg" or ".jpeg" => "image/jpeg",
+                    ".gif" => "image/gif",
+                    ".webp" => "image/webp",
+                    _ => "image/png"
+                };
+                
+                var inlineRequest = new ChatCompletionsOptions()
+                {
+                    Model = modelDeploymentName,
+                    Temperature = 0.3f,
+                    MaxTokens = 800
+                };
+                inlineRequest.Messages.Add(new ChatRequestSystemMessage("You are an expert image analyst. Provide detailed, accurate analysis of images."));
+                inlineRequest.Messages.Add(new ChatRequestUserMessage(new ChatMessageContentItem[]
+                {
+                    new ChatMessageTextContentItem(userQuery),
+                    new ChatMessageImageContentItem(imageBytes, mimeType)
+                }));
+                
+                var analysis = await visionModel.CompleteAsync(inlineRequest);
+                var result = analysis.Value.Content;
+                
+                Console.WriteLine("\n🧠 AI Analysis:");
+                Console.WriteLine(result);
+            }
             Console.WriteLine($"\n{new string('─', 40)}\n");
         }
         catch (Exception ex)
@@ -154,10 +195,29 @@ static async Task<(BlobContainerClient, BlobServiceClient)> GetStorageContainerC
         Console.WriteLine($"   Type: {storageConnection.Type}");
         Console.WriteLine($"   Target: {storageConnection.Target}");
         
-        // Use the Target URL as the storage account URL
-        var storageAccountUrl = storageConnection.Target;
+        // Resolve the storage account URL from the connection.
+        // For AAD-auth connections, Target may be "_" (not a URL). In that case,
+        // extract the storage account name from the Metadata ResourceId and build the blob endpoint.
+        string storageAccountUrl;
+        if (Uri.TryCreate(storageConnection.Target, UriKind.Absolute, out _) 
+            && storageConnection.Target != "_")
+        {
+            storageAccountUrl = storageConnection.Target;
+        }
+        else if (storageConnection.Metadata.TryGetValue("ResourceId", out var resourceId))
+        {
+            // ResourceId looks like: /subscriptions/.../providers/Microsoft.Storage/storageAccounts/<name>
+            var accountName = resourceId.Split('/').Last();
+            storageAccountUrl = $"https://{accountName}.blob.core.windows.net";
+            Console.WriteLine($"   Resolved storage URL from ResourceId: {storageAccountUrl}");
+        }
+        else
+        {
+            throw new InvalidOperationException(
+                "Connection Target is not a valid URL and no ResourceId found in metadata.");
+        }
         
-        // Use the connection's credentials instead of DefaultAzureCredential
+        // Use the connection's credentials to create the BlobServiceClient
         BlobServiceClient blobServiceClient;
         
         if (storageConnection.Credentials != null)
@@ -168,19 +228,16 @@ static async Task<(BlobContainerClient, BlobServiceClient)> GetStorageContainerC
             switch (storageConnection.Credentials)
             {
                 case SASCredentials sasCredentials:
-                    // For SAS credentials, the URL likely already includes the SAS token
                     Console.WriteLine("   Using SAS-based authentication");
                     blobServiceClient = new BlobServiceClient(new Uri(storageAccountUrl));
                     break;
                     
                 case EntraIDCredentials entraCredentials:
-                    // Use Entra ID authentication
                     Console.WriteLine("   Using Entra ID authentication");
                     blobServiceClient = new BlobServiceClient(new Uri(storageAccountUrl), credential);
                     break;
                     
                 case ApiKeyCredentials apiKeyCredentials:
-                    // For storage account key - use the ApiKey property
                     Console.WriteLine("   Using API Key authentication");
                     var storageCredential = new StorageSharedKeyCredential(
                         GetStorageAccountName(storageAccountUrl), 
@@ -190,7 +247,6 @@ static async Task<(BlobContainerClient, BlobServiceClient)> GetStorageContainerC
                     
                 default:
                     Console.WriteLine($"   Unsupported credential type: {storageConnection.Credentials.GetType().Name}");
-                    Console.WriteLine("   Note: AI Foundry SDK is in preview - some credential types not yet fully implemented");
                     Console.WriteLine("   Falling back to DefaultAzureCredential");
                     blobServiceClient = new BlobServiceClient(new Uri(storageAccountUrl), credential);
                     break;
