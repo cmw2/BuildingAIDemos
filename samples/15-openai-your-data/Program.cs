@@ -1,5 +1,6 @@
 using Azure;
 using Azure.AI.OpenAI;
+using Azure.Identity;
 using DotNetEnv;
 using Azure.AI.OpenAI.Chat;
 using OpenAI.Chat;
@@ -14,27 +15,23 @@ Console.WriteLine();
 
 // Get Azure OpenAI configuration
 var endpoint = new Uri(Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!);
-var apiKey = new AzureKeyCredential(Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!);
 var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
 
 // Get Azure AI Search configuration for "Use Your Own Data"
 var searchEndpoint = Environment.GetEnvironmentVariable("AZURE_SEARCH_ENDPOINT");
-var searchApiKey = Environment.GetEnvironmentVariable("AZURE_SEARCH_API_KEY");
 var searchIndexName = Environment.GetEnvironmentVariable("AZURE_SEARCH_INDEX_NAME");
 var embeddingDeploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME");
 var semanticConfiguration = Environment.GetEnvironmentVariable("AZURE_SEARCH_SEMANTIC_CONFIG_NAME") ?? "azureml-default"; // Default semantic configuration
 
 // Validate required environment variables
-if (string.IsNullOrEmpty(searchEndpoint) || string.IsNullOrEmpty(searchApiKey) || string.IsNullOrEmpty(searchIndexName))
+if (string.IsNullOrEmpty(searchEndpoint) || string.IsNullOrEmpty(searchIndexName))
 {
     Console.WriteLine("❌ Missing required Azure AI Search configuration. Please set the following environment variables:");
     Console.WriteLine("  - AZURE_SEARCH_ENDPOINT");
-    Console.WriteLine("  - AZURE_SEARCH_API_KEY");
     Console.WriteLine("  - AZURE_SEARCH_INDEX_NAME");
     Console.WriteLine();
     Console.WriteLine("Example .env configuration:");
     Console.WriteLine("AZURE_SEARCH_ENDPOINT=https://your-search-service.search.windows.net");
-    Console.WriteLine("AZURE_SEARCH_API_KEY=your-search-api-key");
     Console.WriteLine("AZURE_SEARCH_INDEX_NAME=your-index-name");
     return;
 }
@@ -47,8 +44,9 @@ Console.WriteLine();
 
 try
 {
-    // Create Azure OpenAI client
-    var client = new AzureOpenAIClient(endpoint, apiKey);
+    // Create Azure OpenAI client with DefaultAzureCredential
+    var credential = new DefaultAzureCredential();
+    var client = new AzureOpenAIClient(endpoint, credential);
     var chatClient = client.GetChatClient(deploymentName);
     // Extension methods to use data sources with options are subject to SDK surface changes. Suppress the
     // warning to acknowledge and this and use the subject-to-change AddDataSource method.
@@ -72,7 +70,9 @@ try
     {
         Endpoint = new Uri(searchEndpoint),
         IndexName = searchIndexName,
-        Authentication = DataSourceAuthentication.FromApiKey(searchApiKey),
+        // Use the Azure OpenAI resource's system-assigned managed identity to authenticate to Azure AI Search
+        // Ensure the Azure OpenAI resource has the "Search Index Data Reader" role on the Azure AI Search service
+        Authentication = DataSourceAuthentication.FromSystemManagedIdentity(),
         
         // Configure search parameters
         QueryType = DataSourceQueryType.VectorSemanticHybrid,

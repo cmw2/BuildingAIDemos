@@ -1,6 +1,7 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Azure.Identity;
 using DotNetEnv;
 
 // Sample 06: Semantic Kernel .NET CLI Application
@@ -13,15 +14,15 @@ Env.Load("../../../.env");
 
 // Get configuration from environment
 var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
-var apiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!;
 var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
 
-// Create Semantic Kernel with Azure OpenAI
+// Create Semantic Kernel with Azure OpenAI using DefaultAzureCredential
+var credential = new DefaultAzureCredential();
 var builder = Kernel.CreateBuilder()
     .AddAzureOpenAIChatCompletion(
         deploymentName: deploymentName,
         endpoint: endpoint,
-        apiKey: apiKey);
+        credentials: credential);
 
 var kernel = builder.Build();
 

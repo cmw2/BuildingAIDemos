@@ -1,5 +1,6 @@
 using Azure;
 using Azure.AI.OpenAI;
+using Azure.Identity;
 using DotNetEnv;
 using OpenAI.Chat;
 
@@ -8,11 +9,11 @@ Env.Load("../../../.env");
 
 // Get configuration
 var endpoint = new Uri(Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!);
-var apiKey = new AzureKeyCredential(Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!);
 var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
 
-// Create client
-var client = new AzureOpenAIClient(endpoint, apiKey);
+// Create client with DefaultAzureCredential
+var credential = new DefaultAzureCredential();
+var client = new AzureOpenAIClient(endpoint, credential);
 var chatClient = client.GetChatClient(deploymentName);
 
 // Initialize conversation with system message

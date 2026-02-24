@@ -2,6 +2,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.ComponentModel;
+using Azure.Identity;
 using DotNetEnv;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,7 +30,6 @@ using System.Diagnostics;
 Env.Load(".env");
 
 var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
-var apiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!;
 var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
 var appInsightsConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");;
 
@@ -45,12 +45,13 @@ if (!string.IsNullOrEmpty(appInsightsConnectionString))
 }
 Console.WriteLine();
 
-// Create Semantic Kernel with Azure OpenAI
+// Create Semantic Kernel with Azure OpenAI using DefaultAzureCredential
+var credential = new DefaultAzureCredential();
 var builder = Kernel.CreateBuilder()
     .AddAzureOpenAIChatCompletion(
         deploymentName: deploymentName,
         endpoint: endpoint,
-        apiKey: apiKey);
+        credentials: credential);
 
 // Add logging to see function calls
 builder.Services.AddSingleton(loggerFactory);

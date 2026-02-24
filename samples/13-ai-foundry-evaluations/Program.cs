@@ -10,7 +10,6 @@ Env.Load(".env");
 var modelConfig = new
 {
     AzureEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT"),
-    ApiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY"),
     AzureDeploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME"),
     ApiVersion = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_VERSION")
 };

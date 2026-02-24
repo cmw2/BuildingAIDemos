@@ -9,15 +9,19 @@ Watch AI responses appear in real-time, type 'quit' to exit.
 import os
 from dotenv import load_dotenv
 from openai import AzureOpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 
 def main():
     # Load environment variables
     load_dotenv('../../.env')
     
-    # Initialize client
+    # Initialize client with DefaultAzureCredential
+    token_provider = get_bearer_token_provider(
+        DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+    )
     client = AzureOpenAI(
         azure_endpoint=os.getenv('AZURE_OPENAI_ENDPOINT'),
-        api_key=os.getenv('AZURE_OPENAI_API_KEY'),
+        azure_ad_token_provider=token_provider,
         api_version=os.getenv('AZURE_OPENAI_API_VERSION', '2024-02-15-preview')
     )
     

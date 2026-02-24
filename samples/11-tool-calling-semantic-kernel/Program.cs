@@ -1,6 +1,7 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Azure.Identity;
 using System.ComponentModel;
 using DotNetEnv;
 
@@ -20,18 +21,18 @@ using DotNetEnv;
 Env.Load(".env");
 
 var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
-var apiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!;
 var deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT_NAME")!;
 
 Console.WriteLine("🛠️  Tool Calling - Semantic Kernel Auto Implementation");
 Console.WriteLine("Ask questions about the current date, time, or weather!\n");
 
-// Create Semantic Kernel with Azure OpenAI
+// Create Semantic Kernel with Azure OpenAI using DefaultAzureCredential
+var credential = new DefaultAzureCredential();
 var builder = Kernel.CreateBuilder()
     .AddAzureOpenAIChatCompletion(
         deploymentName: deploymentName,
         endpoint: endpoint,
-        apiKey: apiKey);
+        credentials: credential);
 
 // IMPORTANT: Import plugins BEFORE building the kernel!
 // Once kernel.Build() is called, the kernel becomes immutable.

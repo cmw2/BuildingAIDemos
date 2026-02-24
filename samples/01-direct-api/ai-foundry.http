@@ -1,17 +1,24 @@
 ### AI Foundry Direct API Sample
 ### This file demonstrates direct HTTP calls to AI Foundry models
 ### Use the VS Code REST Client extension to execute these requests
-### Make sure to configure your .env file with the correct endpoints and keys
+### Make sure to configure your .env file with the correct endpoints
+###
+### Authentication: Each request uses $aadV2Token for automatic token acquisition inline.
+### The client id is the public client id for Azure CLI, which is widely used and supported for interactive auth flows.
+###
+### If $aadV2Token doesn't work, you can also get a token manually from the az cli and paste it in to replace the $aadV2Token usage.
+###   az account get-access-token --resource https://cognitiveservices.azure.com --query accessToken -o tsv
+### Token is valid for ~60 minutes. Re-run the command to refresh.
 
 @endpoint = {{$dotenv AZURE_OPENAI_ENDPOINT}}
-@apiKey = {{$dotenv AZURE_OPENAI_API_KEY}}
 @deploymentName = {{$dotenv AZURE_OPENAI_DEPLOYMENT_NAME}}
 @apiVersion = {{$dotenv AZURE_OPENAI_API_VERSION}}
 
 ### Basic Chat Completion Request
 POST {{endpoint}}/openai/deployments/{{deploymentName}}/chat/completions?api-version={{apiVersion}}
 Content-Type: application/json
-api-key: {{apiKey}}
+Authorization: Bearer {{$aadV2Token scopes:https://cognitiveservices.azure.com/.default tenantId:<your-tenant-id> clientId:04b07795-8ddb-461a-bbee-02f9e1bf7b46}}
+#Authorization: Bearer <your-token-here>
 
 {
   "messages": [
@@ -24,7 +31,7 @@ api-key: {{apiKey}}
       "content": "Hello! Can you tell me a short joke?"
     }
   ],
-  "max_tokens": 150,
+  "max_completion_tokens": 150,
   "temperature": 0.7
 }
 
@@ -33,7 +40,8 @@ api-key: {{apiKey}}
 ### Chat Completion with Conversation History
 POST {{endpoint}}/openai/deployments/{{deploymentName}}/chat/completions?api-version={{apiVersion}}
 Content-Type: application/json
-api-key: {{apiKey}}
+Authorization: Bearer {{$aadV2Token scopes:https://cognitiveservices.azure.com/.default tenantId:<your-tenant-id> clientId:04b07795-8ddb-461a-bbee-02f9e1bf7b46}}
+#Authorization: Bearer <your-token-here>
 
 {
   "messages": [
@@ -54,7 +62,7 @@ api-key: {{apiKey}}
       "content": "What is the population of that city?"
     }
   ],
-  "max_tokens": 100,
+  "max_completion_tokens": 100,
   "temperature": 0.3
 }
 
@@ -63,7 +71,8 @@ api-key: {{apiKey}}
 ### Different Temperature Settings (Creative vs Factual)
 POST {{endpoint}}/openai/deployments/{{deploymentName}}/chat/completions?api-version={{apiVersion}}
 Content-Type: application/json
-api-key: {{apiKey}}
+Authorization: Bearer {{$aadV2Token scopes:https://cognitiveservices.azure.com/.default tenantId:<your-tenant-id> clientId:04b07795-8ddb-461a-bbee-02f9e1bf7b46}}
+#Authorization: Bearer <your-token-here>
 
 {
   "messages": [
@@ -76,7 +85,7 @@ api-key: {{apiKey}}
       "content": "Explain photosynthesis in simple terms."
     }
   ],
-  "max_tokens": 150,
+  "max_completion_tokens": 1500,
   "temperature": 0.1
 }
 
@@ -85,7 +94,8 @@ api-key: {{apiKey}}
 ### Higher Temperature for Creative Response
 POST {{endpoint}}/openai/deployments/{{deploymentName}}/chat/completions?api-version={{apiVersion}}
 Content-Type: application/json
-api-key: {{apiKey}}
+Authorization: Bearer {{$aadV2Token scopes:https://cognitiveservices.azure.com/.default tenantId:<your-tenant-id> clientId:04b07795-8ddb-461a-bbee-02f9e1bf7b46}}
+#Authorization: Bearer <your-token-here>
 
 {
   "messages": [
@@ -95,11 +105,56 @@ api-key: {{apiKey}}
     },
     {
       "role": "user",
-      "content": "Tell me an imaginative story about a talking tree."
+      "content": "Tell me an short imaginative story about a talking tree."
     }
   ],
-  "max_tokens": 200,
-  "temperature": 0.9
+  "reasoning_effort": "low",
+  "max_completion_tokens": 3000,
+  "temperature": 1
+}
+
+###
+
+### -------------------------------------------------------
+### Azure OpenAI v1 Endpoint (no api-version required)
+### See: https://learn.microsoft.com/en-us/azure/ai-foundry/openai/api-version-lifecycle#api-evolution
+### Uses /openai/v1/ path instead of /openai/deployments/{name}/?api-version=...
+### Model is specified in the request body instead of the URL
+### -------------------------------------------------------
+
+### Chat Completion via /openai/v1/ Endpoint
+POST {{endpoint}}/openai/v1/chat/completions
+Content-Type: application/json
+Authorization: Bearer {{$aadV2Token scopes:https://cognitiveservices.azure.com/.default tenantId:<your-tenant-id> clientId:04b07795-8ddb-461a-bbee-02f9e1bf7b46}}
+#Authorization: Bearer <your-token-here>
+
+{
+  "model": "{{deploymentName}}",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant."
+    },
+    {
+      "role": "user",
+      "content": "What are the benefits of using Azure AI Foundry?"
+    }
+  ],
+  "max_completion_tokens": 1500,
+  "temperature": 0.7
+}
+
+###
+
+### Responses API via /openai/v1/ Endpoint
+POST {{endpoint}}/openai/v1/responses
+Content-Type: application/json
+Authorization: Bearer {{$aadV2Token scopes:https://cognitiveservices.azure.com/.default tenantId:<your-tenant-id> clientId:04b07795-8ddb-461a-bbee-02f9e1bf7b46}}
+#Authorization: Bearer <your-token-here>
+
+{
+  "model": "{{deploymentName}}",
+  "input": "Explain the difference between the Chat Completions API and the Responses API in a few sentences."
 }
 
 ###
