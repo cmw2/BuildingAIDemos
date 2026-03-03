@@ -24,3 +24,6 @@ azure-ai-evaluation
 azure-identity
 azure-ai-projects
 azure-ai-inference
+
+# MCP (Model Context Protocol) client for sample 23
+mcp>=1.0.0
