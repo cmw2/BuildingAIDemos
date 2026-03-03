@@ -1,7 +1,8 @@
-$appName  = "app-name"
-$rgName   = "rg-name"
+$appName  = "app-mcp-weather-demo-cmw"
+$rgName   = "rg-mcp-weather"
 $location = "centralus"
 $sku      = "B1"
+
 
 Push-Location $PSScriptRoot
 az webapp up --name $appName --resource-group $rgName --location $location --sku $sku --os-type Linux --runtime "DOTNETCORE:8.0"
